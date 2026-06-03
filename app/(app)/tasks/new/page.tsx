@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
 import { brokerOptions } from "@/lib/queries/fleet";
+import { oppFormOptions, listOpportunities } from "@/lib/queries/pipeline";
 import { createTask } from "@/lib/actions/tasks";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
@@ -11,7 +12,11 @@ export default async function NewTaskPage() {
   const profile = await getProfile();
   if (!profile) redirect("/login");
   const supabase = await createClient();
-  const brokers = await brokerOptions(supabase);
+  const [brokers, opts, deals] = await Promise.all([
+    brokerOptions(supabase),
+    oppFormOptions(supabase),
+    listOpportunities(supabase, {}) as Promise<{ id: string; title: string }[]>,
+  ]);
   return (
     <AppShell active="tasks" user={shellUser(profile)}>
       <Link href="/tasks" className="back">← Tasks</Link>
@@ -24,6 +29,9 @@ export default async function NewTaskPage() {
           <div className="form-field"><label>Due</label><input name="due_at" type="datetime-local" /></div>
           <div className="form-field"><label>Priority</label><select name="priority" defaultValue="medium"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
           <div className="form-field"><label>Assignee</label><select name="assignee" defaultValue=""><option value="">— Me —</option>{brokers.map((b) => <option key={b.id} value={b.id}>{b.full_name ?? "—"}</option>)}</select></div>
+          <div className="form-field"><label>Link to client</label><select name="client_id" defaultValue=""><option value="">— None —</option>{opts.clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
+          <div className="form-field"><label>Link to yacht</label><select name="yacht_id" defaultValue=""><option value="">— None —</option>{opts.yachts.map((y) => <option key={y.id} value={y.id}>{y.name}</option>)}</select></div>
+          <div className="form-field"><label>Link to deal</label><select name="opportunity_id" defaultValue=""><option value="">— None —</option>{deals.map((d) => <option key={d.id} value={d.id}>{d.title}</option>)}</select></div>
         </div>
         <div className="form-actions">
           <button className="btn primary" type="submit">Create task</button>

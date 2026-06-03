@@ -18,6 +18,7 @@ function linked(t: any): { href: string; name: string } | null {
   if (t.client) return { href: `/clients/${t.client.id}`, name: t.client.name };
   if (t.lead) return { href: `/leads/${t.lead.id}`, name: t.lead.name };
   if (t.yacht) return { href: `/fleet/${t.yacht.id}`, name: t.yacht.name };
+  if (t.opportunity) return { href: `/pipeline/${t.opportunity.id}`, name: t.opportunity.title };
   return null;
 }
 
@@ -59,11 +60,10 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
                 const done = t.status === "completed";
                 const overdue = !done && t.due_at && new Date(t.due_at).getTime() < Date.now();
                 return (
-                  <tr key={t.id}>
+                  <tr key={t.id} className={overdue ? "row-overdue" : undefined}>
                     <td>
                       <form action={setTaskStatus.bind(null, t.id, done ? "todo" : "completed")}>
-                        <button type="submit" title={done ? "Reopen" : "Complete"}
-                          style={{ width: 18, height: 18, borderRadius: 4, border: "1px solid var(--line-2)", background: done ? "var(--accent)" : "transparent", color: "var(--paper)", cursor: "pointer", fontSize: 11, lineHeight: 1 }}>
+                        <button type="submit" title={done ? "Reopen" : "Complete"} className={`task-check${done ? " done" : ""}`}>
                           {done ? "✓" : ""}
                         </button>
                       </form>
