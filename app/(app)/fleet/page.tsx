@@ -33,7 +33,7 @@ export default async function FleetPage({
       <PageHeader
         title="Fleet"
         crumb="management / fleet"
-        actions={<Link href="/fleet/new" className="btn primary">+ Add yacht</Link>}
+        actions={<><a href="/export/fleet" className="btn outline" download>Export CSV</a><Link href="/fleet/new" className="btn primary">+ Add yacht</Link></>}
       />
 
       <div className="kpi-row">

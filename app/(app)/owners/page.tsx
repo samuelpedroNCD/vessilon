@@ -17,7 +17,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
 
   return (
     <AppShell active="owners" user={shellUser(profile)}>
-      <PageHeader title="Owners" crumb="management / owners" actions={<Link href="/owners/new" className="btn primary">+ Add owner</Link>} />
+      <PageHeader title="Owners" crumb="management / owners" actions={<><a href="/export/owners" className="btn outline" download>Export CSV</a><Link href="/owners/new" className="btn primary">+ Add owner</Link></>} />
       <Toolbar current={{ q: sp.q }} searchPlaceholder="Search owners…" />
       {owners.length === 0 ? (
         <EmptyState title="No owners yet" message="Add owner profiles for your listed yachts." ctaLabel="+ Add owner" ctaHref="/owners/new" />

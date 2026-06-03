@@ -23,7 +23,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
 
   return (
     <AppShell active="leads" user={shellUser(profile)}>
-      <PageHeader title="Leads" crumb="brokerage / leads" actions={<Link href="/leads/new" className="btn primary">+ Add lead</Link>} />
+      <PageHeader title="Leads" crumb="brokerage / leads" actions={<><a href="/export/leads" className="btn outline" download>Export CSV</a><Link href="/leads/new" className="btn primary">+ Add lead</Link></>} />
       <div className="kpi-row">
         <div className="kpi"><div className="l">Total leads</div><div className="v tnum">{stats.total}</div><div className="sub2">all-time</div></div>
         <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div><div className="sub2">in the funnel</div></div>

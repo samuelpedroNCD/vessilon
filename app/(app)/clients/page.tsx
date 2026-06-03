@@ -28,7 +28,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
 
   return (
     <AppShell active="buyers" user={shellUser(profile)}>
-      <PageHeader title="Clients" crumb="brokerage / clients" actions={<Link href="/clients/new" className="btn primary">+ Add client</Link>} />
+      <PageHeader title="Clients" crumb="brokerage / clients" actions={<><a href="/export/clients" className="btn outline" download>Export CSV</a><Link href="/clients/new" className="btn primary">+ Add client</Link></>} />
       <div className="kpi-row">
         <div className="kpi"><div className="l">Total clients</div><div className="v tnum">{stats.total}</div><div className="sub2">active relationships</div></div>
         <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div><div className="sub2">priority follow-up</div></div>
