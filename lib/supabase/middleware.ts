@@ -12,6 +12,7 @@ const PROTECTED_PREFIXES = [
   "/interactions",
   "/pipeline",
   "/companies",
+  "/dataroom",
 ];
 
 /**
