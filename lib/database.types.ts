@@ -477,6 +477,185 @@ export type Database = {
           },
         ]
       }
+      crew: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          current_yacht_id: string | null
+          day_rate: number | null
+          email: string | null
+          id: string
+          name: string
+          nationality: string | null
+          notes: string | null
+          org_id: string
+          phone: string | null
+          position: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          current_yacht_id?: string | null
+          day_rate?: number | null
+          email?: string | null
+          id?: string
+          name: string
+          nationality?: string | null
+          notes?: string | null
+          org_id: string
+          phone?: string | null
+          position?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          current_yacht_id?: string | null
+          day_rate?: number | null
+          email?: string | null
+          id?: string
+          name?: string
+          nationality?: string | null
+          notes?: string | null
+          org_id?: string
+          phone?: string | null
+          position?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crew_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crew_current_yacht_id_fkey"
+            columns: ["current_yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crew_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crew_assignments: {
+        Row: {
+          created_at: string
+          crew_id: string
+          end_on: string | null
+          id: string
+          org_id: string
+          role: string | null
+          start_on: string | null
+          yacht_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          crew_id: string
+          end_on?: string | null
+          id?: string
+          org_id: string
+          role?: string | null
+          start_on?: string | null
+          yacht_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          crew_id?: string
+          end_on?: string | null
+          id?: string
+          org_id?: string
+          role?: string | null
+          start_on?: string | null
+          yacht_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crew_assignments_crew_id_fkey"
+            columns: ["crew_id"]
+            isOneToOne: false
+            referencedRelation: "crew"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crew_assignments_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crew_assignments_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crew_certificates: {
+        Row: {
+          created_at: string
+          crew_id: string
+          expires_on: string | null
+          id: string
+          issued_on: string | null
+          issuer: string | null
+          name: string
+          number: string | null
+          org_id: string
+        }
+        Insert: {
+          created_at?: string
+          crew_id: string
+          expires_on?: string | null
+          id?: string
+          issued_on?: string | null
+          issuer?: string | null
+          name: string
+          number?: string | null
+          org_id: string
+        }
+        Update: {
+          created_at?: string
+          crew_id?: string
+          expires_on?: string | null
+          id?: string
+          issued_on?: string | null
+          issuer?: string | null
+          name?: string
+          number?: string | null
+          org_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crew_certificates_crew_id_fkey"
+            columns: ["crew_id"]
+            isOneToOne: false
+            referencedRelation: "crew"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "crew_certificates_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       designers: {
         Row: {
           created_at: string

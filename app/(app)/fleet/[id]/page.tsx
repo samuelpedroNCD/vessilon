@@ -22,6 +22,12 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
   const y = (await getYacht(supabase, id)) as any;
   if (!y) notFound();
   const rel = await getYachtRelations(supabase, id);
+  const { data: aboard } = await supabase
+    .from("crew_assignments")
+    .select("id, role, crew:crew(id, name, position)")
+    .eq("yacht_id", id)
+    .is("end_on", null);
+  const crewAboard = (aboard ?? []) as any[];
   const specs = (y.specs ?? {}) as Record<string, string>;
   const dom = Math.max(0, Math.round((Date.now() - new Date(y.created_at).getTime()) / 86400000));
   const spec = (k: string) => specs[k] ?? "—";
@@ -150,8 +156,17 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
             <div className="stub"><b>Not connected yet.</b> Flag-state docs, MLC / ISM expiry tracking and live AIS position arrive with the Fleet-ops module.</div>
           </div>
           <div className="panel">
-            <div className="panel-h"><h4>Crew aboard</h4></div>
-            <div className="stub"><b>Crew module coming soon.</b> SEAs, rotations and certificates will appear here.</div>
+            <div className="panel-h"><h4>Crew aboard</h4><span className="sub">{crewAboard.length}</span></div>
+            {crewAboard.length ? (
+              <div className="linked-records">
+                {crewAboard.map((a: any) => (
+                  <Link href={`/crew/${a.crew?.id}`} className="lr row-link" key={a.id}>
+                    <span className="ic">{(a.crew?.name ?? "—").slice(0, 2).toUpperCase()}</span>
+                    <span className="nm">{a.crew?.name ?? "—"}<small>{a.role ?? a.crew?.position ?? ""}</small></span>
+                  </Link>
+                ))}
+              </div>
+            ) : <div className="stub"><b>No crew assigned.</b> Assign crew from the <Link href="/crew" style={{ color: "var(--accent)" }}>Crew</Link> module.</div>}
           </div>
         </div>
       </div>
