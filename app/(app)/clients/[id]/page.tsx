@@ -9,6 +9,7 @@ import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import LogInteractionForm from "@/components/app/LogInteractionForm";
 import AgentCard from "@/components/app/AgentCard";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import DocumentsPanel from "@/components/app/DocumentsPanel";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
@@ -28,11 +29,13 @@ export default async function ClientDetail({ params }: { params: Promise<{ id: s
       <PageHeader
         title={c.name}
         crumb="brokerage / clients"
-        sub={<>{c.temperature && <Pill tone={toneFor(c.temperature)}>{label(c.temperature)}</Pill>}{(c.categories ?? []).map((cat: string) => <span key={cat}>{label(cat)}</span>)}</>}
+        sub={<>{c.temperature && <Pill tone={toneFor(c.temperature)}>{label(c.temperature)}</Pill>}{(c.categories ?? []).map((cat: string) => <Pill key={cat} tone="gray">{label(cat)}</Pill>)}</>}
         actions={
           <>
             <Link href={`/clients/${id}/edit`} className="btn outline sm">Edit</Link>
-            <form action={deleteClientRecord.bind(null, id)}><button className="btn outline sm" type="submit">Delete</button></form>
+            <ConfirmForm action={deleteClientRecord.bind(null, id)} message={`Delete "${c.name}"? This can't be undone.`}>
+              <button className="btn outline sm" type="submit">Delete</button>
+            </ConfirmForm>
           </>
         }
       />

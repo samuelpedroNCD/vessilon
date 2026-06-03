@@ -54,7 +54,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
                 <tr key={c.id}>
                   <td><Link href={`/clients/${c.id}`} className="vc-cell row-link stretch"><span className="nm">{c.name}<small>{c.email ?? c.phone ?? ""}</small></span></Link></td>
                   <td>{c.company?.name ?? "—"}</td>
-                  <td>{c.categories?.length ? c.categories.map(label).join(", ") : "—"}</td>
+                  <td>{c.categories?.length ? <span className="cats">{c.categories.map((cat) => <Pill key={cat} tone="gray">{label(cat)}</Pill>)}</span> : "—"}</td>
                   <td>{c.temperature ? <Pill tone={toneFor(c.temperature)}>{label(c.temperature)}</Pill> : "—"}</td>
                   <td className="tnum">{ago(c.last_interaction_at)}</td>
                   <td>{c.broker?.full_name ?? "—"}</td>

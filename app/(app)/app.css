@@ -482,6 +482,9 @@
 .app .aibar-track { width: 38px; height: 5px; border-radius: 3px; background: var(--bg); overflow: hidden; }
 .app .aibar-track i { display: block; height: 100%; background: var(--accent); }
 
+/* category pill cluster in table cells */
+.app td .cats { display: inline-flex; gap: 4px; flex-wrap: wrap; }
+
 /* ============================ Marketing room ============================ */
 .app .mkt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .app .mkt-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; padding: 3px 4px 3px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); }
