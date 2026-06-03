@@ -46,7 +46,7 @@ export default async function InteractionsPage({ searchParams }: { searchParams:
       ) : (
         <div className="panel" style={{ padding: 0 }}>
           <table className="tbl">
-            <thead><tr><th>Type</th><th>Notes</th><th>Linked to</th><th>Broker</th><th>When</th></tr></thead>
+            <thead><tr><th>Type</th><th>Notes</th><th>Linked to</th><th>Broker</th><th className="num">When</th></tr></thead>
             <tbody>
               {items.map((i) => {
                 const ln = linked(i);

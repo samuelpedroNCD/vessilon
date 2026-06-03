@@ -260,15 +260,53 @@
 .app .back { font-family: var(--font-mono); font-size: 11px; color: var(--ink-3); margin-bottom: 8px; display: inline-block; }
 .app .back:hover { color: var(--ink-2); }
 
-/* ---------- List polish: full-row clickable ---------- */
+/* ============================================================
+   Data tables (the .tbl system) — the canonical list look
+   ============================================================ */
+.app table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.app table.tbl thead th {
+  text-align: left; padding: 11px 16px;
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 500;
+  color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.07em;
+  border-bottom: 1px solid var(--line); background: var(--bg); white-space: nowrap;
+}
+.app table.tbl thead th.num { text-align: right; }
+.app table.tbl thead th.chev { width: 30px; padding-left: 0; padding-right: 14px; }
+.app table.tbl tbody td { padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; color: var(--ink); }
+.app table.tbl tbody tr:last-child td { border-bottom: none; }
+.app table.tbl tbody td.tnum { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); }
+.app table.tbl tbody td.tnum.strong { color: var(--ink); font-weight: 600; }
+
+/* full-row clickable + hover */
 .app table.tbl tbody tr { position: relative; }
-.app table.tbl tbody tr:hover { cursor: pointer; }
-.app table.tbl tbody .row-link.stretch::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.app table.tbl tbody tr:hover td { background: var(--paper-2); cursor: pointer; }
 .app table.tbl tbody td { position: relative; }
-.app table.tbl tbody td a:not(.stretch), .app table.tbl tbody td .pill { position: relative; z-index: 2; }
+.app table.tbl tbody .row-link.stretch::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.app table.tbl tbody td a:not(.stretch), .app table.tbl tbody td .pill, .app table.tbl tbody td form, .app table.tbl tbody td button { position: relative; z-index: 2; }
+
+/* trailing chevron affordance */
+.app table.tbl td.chev { color: var(--line-2); text-align: right; padding-left: 0; padding-right: 16px; font-size: 16px; }
+.app table.tbl tbody tr:hover td.chev { color: var(--ink-3); }
 
 /* ---------- KPI sublabel ---------- */
-.app .kpi .sub2 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); margin-top: 5px; letter-spacing: 0.02em; }
+.app .kpi { transition: box-shadow var(--dur-fast) var(--ease); }
+.app .kpi:hover { box-shadow: var(--shadow-md); }
+.app .kpi .sub2 { font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); margin-top: 6px; letter-spacing: 0.02em; }
+
+/* ---------- Toolbar focus ---------- */
+.app .toolbar .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,59,46,0.1); }
+.app .toolbar select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,59,46,0.1); }
+
+/* ---------- Pills: dot + slightly larger ---------- */
+.app .pill { font-size: 9.5px; padding: 2px 7px; }
+.app .pill.ok::before, .app .pill.warn::before, .app .pill.danger::before, .app .pill.info::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.85; }
+
+/* ---------- Card elevation ---------- */
+.app .panel { box-shadow: var(--shadow-sm); }
+.app .kpi { box-shadow: var(--shadow-sm); }
+
+/* ---------- Hero photo depth (sheen via overlay, keeps the vessel color) ---------- */
+.app .hero .photo::after { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 80% at 30% 18%, rgba(255,255,255,0.18), transparent 55%); z-index: 1; }
 
 /* ---------- Hero photo waterline ---------- */
 .app .hero .photo::before { content: ""; position: absolute; left: 0; right: 0; top: 60%; height: 1px; background: rgba(255,255,255,0.30); z-index: 1; }

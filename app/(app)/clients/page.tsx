@@ -30,10 +30,10 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
     <AppShell active="buyers" user={shellUser(profile)}>
       <PageHeader title="Clients" crumb="brokerage / clients" actions={<Link href="/clients/new" className="btn primary">+ Add client</Link>} />
       <div className="kpi-row">
-        <div className="kpi"><div className="l">Total clients</div><div className="v tnum">{stats.total}</div></div>
-        <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div></div>
-        <div className="kpi"><div className="l">Buyers</div><div className="v tnum">{stats.buyers}</div></div>
-        <div className="kpi"><div className="l">Sellers</div><div className="v tnum">{stats.sellers}</div></div>
+        <div className="kpi"><div className="l">Total clients</div><div className="v tnum">{stats.total}</div><div className="sub2">active relationships</div></div>
+        <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div><div className="sub2">priority follow-up</div></div>
+        <div className="kpi"><div className="l">Buyers</div><div className="v tnum">{stats.buyers}</div><div className="sub2">buy-side</div></div>
+        <div className="kpi"><div className="l">Sellers</div><div className="v tnum">{stats.sellers}</div><div className="sub2">sell-side mandates</div></div>
       </div>
       <Toolbar
         current={filters as Record<string, string | undefined>}
@@ -48,7 +48,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
       ) : (
         <div className="panel" style={{ padding: 0 }}>
           <table className="tbl">
-            <thead><tr><th>Client</th><th>Company</th><th>Categories</th><th>Temp</th><th>Last activity</th><th>Broker</th></tr></thead>
+            <thead><tr><th>Client</th><th>Company</th><th>Categories</th><th>Temp</th><th className="num">Last activity</th><th>Broker</th><th className="chev" /></tr></thead>
             <tbody>
               {clients.map((c) => (
                 <tr key={c.id}>
@@ -58,6 +58,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
                   <td>{c.temperature ? <Pill tone={toneFor(c.temperature)}>{label(c.temperature)}</Pill> : "—"}</td>
                   <td className="tnum">{ago(c.last_interaction_at)}</td>
                   <td>{c.broker?.full_name ?? "—"}</td>
+                  <td className="chev">›</td>
                 </tr>
               ))}
             </tbody>

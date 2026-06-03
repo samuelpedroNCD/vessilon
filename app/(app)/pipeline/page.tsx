@@ -96,7 +96,7 @@ async function PipelineList({ supabase, lob }: { supabase: any; lob: string }) {
   return (
     <div className="panel" style={{ padding: 0 }}>
       <table className="tbl">
-        <thead><tr><th>Deal</th><th>Stage</th><th>Client</th><th>Yacht</th><th>Value</th><th>Close</th><th>Status</th></tr></thead>
+        <thead><tr><th>Deal</th><th>Stage</th><th>Client</th><th>Yacht</th><th className="num">Value</th><th className="num">Close</th><th>Status</th><th className="chev" /></tr></thead>
         <tbody>
           {opps.map((o) => (
             <tr key={o.id}>
@@ -107,6 +107,7 @@ async function PipelineList({ supabase, lob }: { supabase: any; lob: string }) {
               <td className="tnum">{o.value ? money(o.value) : "—"}</td>
               <td className="tnum">{o.expected_close ? new Date(o.expected_close).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : "—"}</td>
               <td><Pill tone={toneFor(o.status)}>{label(o.status)}</Pill></td>
+              <td className="chev">›</td>
             </tr>
           ))}
         </tbody>

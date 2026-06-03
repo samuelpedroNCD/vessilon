@@ -35,10 +35,10 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
     <AppShell active="tasks" user={shellUser(profile)}>
       <PageHeader title="Tasks" crumb="brokerage / tasks" actions={<Link href="/tasks/new" className="btn primary">+ New task</Link>} />
       <div className="kpi-row">
-        <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div></div>
-        <div className="kpi"><div className="l">Due today</div><div className="v tnum">{stats.dueToday}</div></div>
-        <div className="kpi"><div className="l">Overdue</div><div className="v tnum alert">{stats.overdue}</div></div>
-        <div className="kpi"><div className="l">Completed</div><div className="v tnum">{stats.completed}</div></div>
+        <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div><div className="sub2">to do</div></div>
+        <div className="kpi"><div className="l">Due today</div><div className="v tnum">{stats.dueToday}</div><div className="sub2">on your plate</div></div>
+        <div className="kpi"><div className="l">Overdue</div><div className="v tnum alert">{stats.overdue}</div><div className="sub2">past due</div></div>
+        <div className="kpi"><div className="l">Completed</div><div className="v tnum">{stats.completed}</div><div className="sub2">done</div></div>
       </div>
       <Toolbar
         current={{ status: sp.status, priority: sp.priority }}
@@ -52,7 +52,7 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
       ) : (
         <div className="panel" style={{ padding: 0 }}>
           <table className="tbl">
-            <thead><tr><th style={{ width: 36 }} /><th>Task</th><th>Linked to</th><th>Due</th><th>Priority</th><th>Status</th></tr></thead>
+            <thead><tr><th style={{ width: 36 }} /><th>Task</th><th>Linked to</th><th className="num">Due</th><th>Priority</th><th>Status</th></tr></thead>
             <tbody>
               {tasks.map((t) => {
                 const ln = linked(t);

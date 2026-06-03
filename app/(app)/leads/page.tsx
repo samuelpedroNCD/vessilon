@@ -25,10 +25,10 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
     <AppShell active="leads" user={shellUser(profile)}>
       <PageHeader title="Leads" crumb="brokerage / leads" actions={<Link href="/leads/new" className="btn primary">+ Add lead</Link>} />
       <div className="kpi-row">
-        <div className="kpi"><div className="l">Total leads</div><div className="v tnum">{stats.total}</div></div>
-        <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div></div>
-        <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div></div>
-        <div className="kpi"><div className="l">Converted</div><div className="v tnum">{stats.converted}</div></div>
+        <div className="kpi"><div className="l">Total leads</div><div className="v tnum">{stats.total}</div><div className="sub2">all-time</div></div>
+        <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div><div className="sub2">in the funnel</div></div>
+        <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div><div className="sub2">high intent</div></div>
+        <div className="kpi"><div className="l">Converted</div><div className="v tnum">{stats.converted}</div><div className="sub2">became clients</div></div>
       </div>
       <Toolbar
         current={filters as Record<string, string | undefined>}
@@ -44,7 +44,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
       ) : (
         <div className="panel" style={{ padding: 0 }}>
           <table className="tbl">
-            <thead><tr><th>Lead</th><th>LOB</th><th>Status</th><th>Temp</th><th>Source</th><th>AI</th><th>Broker</th></tr></thead>
+            <thead><tr><th>Lead</th><th>LOB</th><th>Status</th><th>Temp</th><th>Source</th><th className="num">AI</th><th>Broker</th><th className="chev" /></tr></thead>
             <tbody>
               {leads.map((l) => (
                 <tr key={l.id}>
@@ -55,6 +55,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   <td>{l.source ?? "—"}</td>
                   <td className="tnum">{l.ai_confidence != null ? `${Math.round(l.ai_confidence * 100)}%` : "—"}</td>
                   <td>{l.broker?.full_name ?? "—"}</td>
+                  <td className="chev">›</td>
                 </tr>
               ))}
             </tbody>

@@ -24,7 +24,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
       ) : (
         <div className="panel" style={{ padding: 0 }}>
           <table className="tbl">
-            <thead><tr><th>Owner</th><th>Email</th><th>Phone</th><th>Yachts</th></tr></thead>
+            <thead><tr><th>Owner</th><th>Email</th><th>Phone</th><th className="num">Yachts</th><th className="chev" /></tr></thead>
             <tbody>
               {owners.map((o) => (
                 <tr key={o.id}>
@@ -32,6 +32,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
                   <td>{o.email ?? "—"}</td>
                   <td>{o.phone ?? "—"}</td>
                   <td className="tnum">{o.yachts?.[0]?.count ?? 0}</td>
+                  <td className="chev">›</td>
                 </tr>
               ))}
             </tbody>

@@ -36,10 +36,10 @@ export default async function FleetPage({
       />
 
       <div className="kpi-row">
-        <div className="kpi"><div className="l">Total fleet</div><div className="v tnum">{total}</div></div>
-        <div className="kpi"><div className="l">Active</div><div className="v tnum">{counts.active ?? 0}</div></div>
-        <div className="kpi"><div className="l">Under offer</div><div className="v tnum">{(counts.under_offer ?? 0) + (counts.conditional ?? 0)}</div></div>
-        <div className="kpi"><div className="l">Sold</div><div className="v tnum">{counts.sold ?? 0}</div></div>
+        <div className="kpi"><div className="l">Total fleet</div><div className="v tnum">{total}</div><div className="sub2">vessels across all LOBs</div></div>
+        <div className="kpi"><div className="l">Active</div><div className="v tnum">{counts.active ?? 0}</div><div className="sub2">on the market</div></div>
+        <div className="kpi"><div className="l">Under offer</div><div className="v tnum">{(counts.under_offer ?? 0) + (counts.conditional ?? 0)}</div><div className="sub2">incl. conditional</div></div>
+        <div className="kpi"><div className="l">Sold</div><div className="v tnum">{counts.sold ?? 0}</div><div className="sub2">closed transactions</div></div>
       </div>
 
       <Toolbar
@@ -64,7 +64,7 @@ export default async function FleetPage({
           <table className="tbl">
             <thead>
               <tr>
-                <th>Vessel</th><th>Type · LOB</th><th>LOA · Year</th><th>Price</th><th>Status</th><th>Broker</th><th>Region</th>
+                <th>Vessel</th><th>Type · LOB</th><th className="num">LOA · Year</th><th className="num">Price</th><th>Status</th><th>Broker</th><th>Region</th><th className="chev" />
               </tr>
             </thead>
             <tbody>
@@ -82,6 +82,7 @@ export default async function FleetPage({
                   <td><Pill tone={toneFor(y.status)}>{label(y.status)}</Pill></td>
                   <td>{y.broker?.full_name ?? "—"}</td>
                   <td>{y.region ?? "—"}</td>
+                  <td className="chev">›</td>
                 </tr>
               ))}
             </tbody>
