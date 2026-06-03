@@ -863,6 +863,121 @@ export type Database = {
           },
         ]
       }
+      listing_media: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          org_id: string
+          position: number
+          storage_path: string
+          yacht_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          org_id: string
+          position?: number
+          storage_path: string
+          yacht_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          org_id?: string
+          position?: number
+          storage_path?: string
+          yacht_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_media_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_media_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      listings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          featured: boolean
+          headline: string | null
+          highlights: string[]
+          id: string
+          org_id: string
+          published_at: string | null
+          share_token: string | null
+          status: string
+          updated_at: string
+          yacht_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          featured?: boolean
+          headline?: string | null
+          highlights?: string[]
+          id?: string
+          org_id: string
+          published_at?: string | null
+          share_token?: string | null
+          status?: string
+          updated_at?: string
+          yacht_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          featured?: boolean
+          headline?: string | null
+          highlights?: string[]
+          id?: string
+          org_id?: string
+          published_at?: string | null
+          share_token?: string | null
+          status?: string
+          updated_at?: string
+          yacht_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: true
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lob_stages: {
         Row: {
           created_at: string
@@ -1845,6 +1960,8 @@ export type Database = {
         Returns: undefined
       }
       public_brochure: { Args: { p_token: string }; Returns: Json }
+      public_listing: { Args: { p_token: string }; Returns: Json }
+      public_listings: { Args: { p_slug: string }; Returns: Json }
       seed_lob_stages: { Args: { p_org: string }; Returns: undefined }
     }
     Enums: {
