@@ -19,6 +19,7 @@ const ICONS: Record<string, ReactNode> = {
   interactions: (<><path d="M2 3.5h10v6H6l-2.5 2.5V9.5H2v-6z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></>),
   companies: (<><rect x="2" y="2" width="7" height="10" rx="1" stroke="currentColor" strokeWidth="1.3" /><path d="M9 5h3v7H9" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /><path d="M4 4.5h3M4 6.5h3M4 8.5h3" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /></>),
   ref: (<><circle cx="7" cy="7" r="5.3" stroke="currentColor" strokeWidth="1.3" /><circle cx="7" cy="7" r="1.6" fill="currentColor" /></>),
+  settings: (<><circle cx="7" cy="7" r="2" stroke="currentColor" strokeWidth="1.3" /><path d="M7 1.5v1.5M7 11v1.5M12.5 7H11M3 7H1.5M10.8 3.2l-1 1M4.2 9.8l-1 1M10.8 10.8l-1-1M4.2 4.2l-1-1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" /></>),
   offers: (<><path d="M2 5l5-3 5 3v6l-5 3-5-3V5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /><circle cx="7" cy="8" r="1.5" fill="currentColor" /></>),
   closings: (<path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />),
   vessels: (<path d="M2 8l5-5 5 5v3H2V8z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />),
@@ -64,6 +65,7 @@ const NAV: NavEntry[] = [
   { type: "item", key: "interactions", label: "Activity", href: "/interactions" },
   { type: "item", key: "agents", label: "Agents", href: "#" },
   { type: "item", key: "audit", label: "Audit log", href: "#" },
+  { type: "item", key: "settings", label: "Settings", href: "/settings", icon: "settings" },
 ];
 
 export default function AppShell({

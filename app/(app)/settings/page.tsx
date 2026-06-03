@@ -1,0 +1,79 @@
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { getProfile, shellUser } from "@/lib/queries/profile";
+import { getOrg, listUsers } from "@/lib/queries/settings";
+import { updateOrg, setUserRole } from "@/lib/actions/settings";
+import AppShell from "@/components/app/AppShell";
+import PageHeader from "@/components/app/PageHeader";
+import { Pill, label } from "@/components/app/Pill";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const ROLES = ["admin", "executive", "senior_broker", "broker", "marketing", "operations", "client"];
+
+export default async function SettingsPage() {
+  const profile = await getProfile();
+  if (!profile) redirect("/login");
+  const supabase = await createClient();
+  const [org, users] = await Promise.all([getOrg(supabase), listUsers(supabase)]);
+  const o = (org ?? {}) as any;
+  const isAdmin = profile.role === "admin";
+
+  return (
+    <AppShell active="settings" user={shellUser(profile)}>
+      <PageHeader title="Settings" crumb="settings / organisation" />
+
+      <div className="two-col">
+        <div className="stack">
+          <div className="panel">
+            <div className="panel-h"><h4>Organisation</h4>{!isAdmin && <span className="sub">read-only (admins can edit)</span>}</div>
+            <form action={updateOrg} className="form-grid">
+              <div className="form-field full"><label>Name</label><input name="name" defaultValue={o.name ?? ""} disabled={!isAdmin} /></div>
+              <div className="form-field"><label>Account type</label><select name="account_type" defaultValue={o.account_type ?? ""} disabled={!isAdmin}><option value="">—</option><option value="brokerage">Brokerage</option><option value="management">Management</option><option value="both">Both</option></select></div>
+              <div className="form-field"><label>Primary region</label><input name="region" defaultValue={o.region ?? ""} disabled={!isAdmin} /></div>
+              <div className="form-field"><label>Fleet size</label><input name="fleet_size" defaultValue={o.fleet_size ?? ""} disabled={!isAdmin} /></div>
+              {isAdmin && <div className="form-actions" style={{ gridColumn: "1 / -1" }}><button className="btn primary" type="submit">Save organisation</button></div>}
+            </form>
+          </div>
+        </div>
+
+        <div className="stack">
+          <div className="panel">
+            <div className="panel-h"><h4>Your profile</h4></div>
+            <div className="spec-grid">
+              <div className="sr"><span className="k">Name</span><span className="v">{profile.full_name}</span></div>
+              <div className="sr"><span className="k">Email</span><span className="v">{profile.email}</span></div>
+              <div className="sr"><span className="k">Role</span><span className="v">{label(profile.role)}</span></div>
+              <div className="sr"><span className="k">Workspace</span><span className="v">{profile.company}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel" style={{ padding: 0, marginTop: 14 }}>
+        <div className="panel-h" style={{ padding: "14px 20px" }}><h4>Users &amp; roles</h4><span className="sub">{users.length}</span></div>
+        <table className="tbl">
+          <thead><tr><th>User</th><th>Email</th><th>Role</th>{isAdmin && <th>Change role</th>}</tr></thead>
+          <tbody>
+            {users.map((u: any) => (
+              <tr key={u.id}>
+                <td><strong style={{ fontWeight: 600 }}>{u.full_name ?? "—"}</strong>{u.title ? <div style={{ fontSize: 11, color: "var(--ink-3)" }}>{u.title}</div> : null}</td>
+                <td>{u.email ?? "—"}</td>
+                <td><Pill tone="info">{label(u.role)}</Pill></td>
+                {isAdmin && (
+                  <td>
+                    <form action={setUserRole.bind(null, u.id)} style={{ display: "flex", gap: 6 }}>
+                      <select name="role" defaultValue={u.role} style={{ padding: "5px 8px", border: "1px solid var(--line-2)", borderRadius: 6, fontSize: 12 }}>
+                        {ROLES.map((r) => <option key={r} value={r}>{label(r)}</option>)}
+                      </select>
+                      <button className="btn outline sm" type="submit">Set</button>
+                    </form>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </AppShell>
+  );
+}
