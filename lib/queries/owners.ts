@@ -23,9 +23,11 @@ export async function getOwner(supabase: SupabaseClient, id: string) {
 }
 
 export async function getOwnerRelations(supabase: SupabaseClient, id: string) {
-  const [yachts, interactions] = await Promise.all([
-    supabase.from("yachts").select("id, name, status, price, hero_color, hull_id").eq("owner_id", id),
-    supabase.from("interactions").select("id, type, notes, occurred_at").eq("client_id", id).order("occurred_at", { ascending: false }).limit(8),
-  ]);
-  return { yachts: (yachts.data ?? []) as Record<string, unknown>[], interactions: (interactions.data ?? []) as Record<string, unknown>[] };
+  // Interactions have no owner_id link, so there is no direct owner activity
+  // feed — only the owner's yachts are related here.
+  const { data: yachts } = await supabase
+    .from("yachts")
+    .select("id, name, status, price, type, hero_image, hero_color, hull_id")
+    .eq("owner_id", id);
+  return { yachts: (yachts ?? []) as Record<string, unknown>[] };
 }

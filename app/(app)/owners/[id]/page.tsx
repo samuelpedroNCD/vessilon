@@ -5,8 +5,10 @@ import { getProfile, shellUser } from "@/lib/queries/profile";
 import { getOwner, getOwnerRelations } from "@/lib/queries/owners";
 import { deleteOwner } from "@/lib/actions/owners";
 import { money } from "@/lib/queries/overview";
+import { yachtPhoto } from "@/lib/fleet/photo";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -28,7 +30,9 @@ export default async function OwnerDetail({ params }: { params: Promise<{ id: st
         actions={
           <>
             <Link href={`/owners/${id}/edit`} className="btn outline sm">Edit</Link>
-            <form action={deleteOwner.bind(null, id)}><button className="btn outline sm" type="submit">Delete</button></form>
+            <ConfirmForm action={deleteOwner.bind(null, id)} message={`Delete owner "${o.name}"? This can't be undone.`}>
+              <button className="btn outline sm" type="submit">Delete</button>
+            </ConfirmForm>
           </>
         }
       />
@@ -40,7 +44,7 @@ export default async function OwnerDetail({ params }: { params: Promise<{ id: st
               <div className="linked-records">
                 {rel.yachts.map((y: any) => (
                   <Link href={`/fleet/${y.id}`} key={y.id} className="lr row-link">
-                    <span className={`ic vthumb ${y.hero_color ?? ""}`} />
+                    <span className="ic vthumb pic" style={{ backgroundImage: `url(${yachtPhoto(y)})` }} />
                     <span className="nm">{y.name}<small>{y.hull_id ?? ""}</small></span>
                     <span className="end"><Pill tone={toneFor(y.status)}>{label(y.status)}</Pill> {y.price ? money(y.price) : ""}</span>
                   </Link>
