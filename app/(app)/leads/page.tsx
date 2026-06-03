@@ -28,7 +28,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         <div className="kpi"><div className="l">Total leads</div><div className="v tnum">{stats.total}</div><div className="sub2">all-time</div></div>
         <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div><div className="sub2">in the funnel</div></div>
         <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div><div className="sub2">high intent</div></div>
-        <div className="kpi"><div className="l">Converted</div><div className="v tnum">{stats.converted}</div><div className="sub2">became clients</div></div>
+        <div className="kpi"><div className="l">Converted</div><div className="v tnum">{stats.converted}</div><div className="sub2">{stats.total ? Math.round((stats.converted / stats.total) * 100) : 0}% conv · {stats.lost} lost</div></div>
       </div>
       <Toolbar
         current={filters as Record<string, string | undefined>}
@@ -53,7 +53,14 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   <td><Pill tone={toneFor(l.status)}>{label(l.status)}</Pill></td>
                   <td>{l.temperature ? <Pill tone={toneFor(l.temperature)}>{label(l.temperature)}</Pill> : "—"}</td>
                   <td>{l.source ?? "—"}</td>
-                  <td className="tnum">{l.ai_confidence != null ? `${Math.round(l.ai_confidence * 100)}%` : "—"}</td>
+                  <td className="tnum">
+                    {l.ai_confidence != null ? (
+                      <span className="aibar" title={`AI lead score ${Math.round(l.ai_confidence * 100)}%`}>
+                        <span className="aibar-track"><i style={{ width: `${Math.round(l.ai_confidence * 100)}%` }} /></span>
+                        {Math.round(l.ai_confidence * 100)}%
+                      </span>
+                    ) : "—"}
+                  </td>
                   <td>{l.broker?.full_name ?? "—"}</td>
                   <td className="chev">›</td>
                 </tr>

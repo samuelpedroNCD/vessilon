@@ -8,6 +8,7 @@ import { money } from "@/lib/queries/overview";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import AgentCard from "@/components/app/AgentCard";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -33,10 +34,14 @@ export default async function LeadDetail({ params }: { params: Promise<{ id: str
             {converted ? (
               <Link href={`/clients/${l.converted_client_id}`} className="btn outline sm">View client →</Link>
             ) : (
-              <form action={convertLead.bind(null, id)}><button className="btn primary sm" type="submit">Convert to client</button></form>
+              <ConfirmForm action={convertLead.bind(null, id)} message={`Convert "${l.name ?? "this lead"}" to a client? This creates a new client and marks the lead converted.`}>
+                <button className="btn primary sm" type="submit">Convert to client</button>
+              </ConfirmForm>
             )}
             <Link href={`/leads/${id}/edit`} className="btn outline sm">Edit</Link>
-            <form action={deleteLead.bind(null, id)}><button className="btn outline sm" type="submit">Delete</button></form>
+            <ConfirmForm action={deleteLead.bind(null, id)} message={`Delete "${l.name ?? "this lead"}"? This can't be undone.`}>
+              <button className="btn outline sm" type="submit">Delete</button>
+            </ConfirmForm>
           </>
         }
       />

@@ -39,6 +39,7 @@ export async function leadStats(supabase: SupabaseClient) {
     hot: rows.filter((r) => r.temperature === "hot").length,
     open: rows.filter((r) => !["converted", "lost", "unqualified"].includes(r.status)).length,
     converted: rows.filter((r) => r.status === "converted").length,
+    lost: rows.filter((r) => r.status === "lost").length,
   };
 }
 
