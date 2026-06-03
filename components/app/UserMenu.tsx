@@ -39,8 +39,8 @@ export default function UserMenu({
               <div className="nm">{name}</div>
               <div className="em">{email}</div>
             </div>
-            <a href="#">Settings</a>
-            <a href="#">Help &amp; support</a>
+            <a href="/settings">Settings</a>
+            <a href="mailto:support@vessilon.com">Help &amp; support</a>
             <button onClick={signOut}>Sign out</button>
           </div>
         </>

@@ -33,7 +33,7 @@ const ICONS: Record<string, ReactNode> = {
 
 type NavEntry =
   | { type: "group"; label: string }
-  | { type: "item"; key: string; label: string; href: string; ct?: string; alert?: boolean; icon?: string };
+  | { type: "item"; key: string; label: string; href: string; ct?: string; alert?: boolean; icon?: string; soon?: boolean };
 
 const NAV: NavEntry[] = [
   { type: "item", key: "overview", label: "Overview", href: "/dashboard" },
@@ -45,16 +45,16 @@ const NAV: NavEntry[] = [
   { type: "item", key: "buyers", label: "Clients", href: "/clients" },
   { type: "item", key: "pipeline", label: "Pipeline", href: "/pipeline" },
   { type: "item", key: "marketing", label: "Marketing", href: "/marketing" },
-  { type: "item", key: "listings", label: "Listings", href: "#" },
-  { type: "item", key: "offers", label: "Offers", href: "#" },
-  { type: "item", key: "closings", label: "Closings", href: "#" },
+  { type: "item", key: "listings", label: "Listings", href: "#", soon: true },
+  { type: "item", key: "offers", label: "Offers", href: "#", soon: true },
+  { type: "item", key: "closings", label: "Closings", href: "#", soon: true },
   { type: "group", label: "Management" },
   { type: "item", key: "vessels", label: "Fleet", href: "/fleet" },
   { type: "item", key: "owners", label: "Owners", href: "/owners" },
-  { type: "item", key: "crew", label: "Crew", href: "#" },
-  { type: "item", key: "charters", label: "Charters", href: "#" },
-  { type: "item", key: "compliance", label: "Compliance", href: "#" },
-  { type: "item", key: "reports", label: "Owner reports", href: "#" },
+  { type: "item", key: "crew", label: "Crew", href: "#", soon: true },
+  { type: "item", key: "charters", label: "Charters", href: "#", soon: true },
+  { type: "item", key: "compliance", label: "Compliance", href: "#", soon: true },
+  { type: "item", key: "reports", label: "Owner reports", href: "#", soon: true },
   { type: "group", label: "DataRoom" },
   { type: "item", key: "companies", label: "Companies", href: "/companies" },
   { type: "item", key: "shipyards", label: "Shipyards", href: "/dataroom/shipyards", icon: "ref" },
@@ -65,7 +65,7 @@ const NAV: NavEntry[] = [
   { type: "item", key: "destinations", label: "Destinations", href: "/dataroom/destinations", icon: "ref" },
   { type: "group", label: "System" },
   { type: "item", key: "interactions", label: "Activity", href: "/interactions" },
-  { type: "item", key: "agents", label: "Agents", href: "#" },
+  { type: "item", key: "agents", label: "Agents", href: "#", soon: true },
   { type: "item", key: "audit", label: "Audit log", href: "/audit" },
   { type: "item", key: "settings", label: "Settings", href: "/settings", icon: "settings" },
 ];
@@ -117,6 +117,12 @@ export default function AppShell({
         {NAV.map((n, i) =>
           n.type === "group" ? (
             <div className="group" key={`g${i}`}>{n.label}</div>
+          ) : n.soon ? (
+            <span key={n.key} className="navsoon" aria-disabled="true">
+              <svg className="ico" viewBox="0 0 14 14" fill="none">{ICONS[n.icon ?? n.key] ?? ICONS.ref}</svg>
+              {n.label}
+              <span className="soon">Soon</span>
+            </span>
           ) : (
             <a key={n.key} href={n.href} className={n.key === active ? "active" : undefined}>
               <svg className="ico" viewBox="0 0 14 14" fill="none">{ICONS[n.icon ?? n.key] ?? ICONS.ref}</svg>

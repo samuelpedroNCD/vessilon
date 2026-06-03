@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 
 function str(v: FormDataEntryValue | null): string | null {
   const s = (v ?? "").toString().trim();
@@ -34,6 +35,14 @@ export async function logInteraction(fd: FormData) {
     opportunity_id,
   } as never);
   if (error) throw new Error(error.message);
+
+  await recordAudit({
+    action: "log",
+    entityType: "interaction",
+    entityLabel: type,
+    summary: `Logged ${type}${outcome ? ` · ${outcome}` : ""}`,
+    meta: { client_id, lead_id, yacht_id, opportunity_id },
+  });
 
   if (client_id) {
     await supabase.from("clients").update({ last_interaction_at: new Date().toISOString() } as never).eq("id", client_id);

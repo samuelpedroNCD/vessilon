@@ -44,6 +44,10 @@
 .app .side a .ct { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--ink-3); }
 .app .side a.active .ct { color: rgba(255,255,255,0.7); }
 .app .side a .ct.alert { color: var(--signal); }
+/* "Soon" (unimplemented) nav items — visible roadmap, not navigable */
+.app .side .navsoon { display: flex; align-items: center; gap: 9px; padding: 6px 10px; border-radius: 6px; color: var(--ink-3); cursor: default; }
+.app .side .navsoon .ico { width: 14px; height: 14px; flex: 0 0 14px; opacity: 0.4; }
+.app .side .navsoon .soon { margin-left: auto; font-family: var(--font-mono); font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); border: 1px solid var(--line); border-radius: 999px; padding: 1px 6px; }
 .app .side .upgrade { margin-top: auto; padding: 14px 14px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
 .app .side .upgrade .l { font-family: var(--font-mono); font-size: 9px; color: var(--signal); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
 .app .side .upgrade .b { font-size: 13px; font-weight: 600; margin: 4px 0 4px; letter-spacing: -0.005em; }
