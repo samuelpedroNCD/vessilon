@@ -6,6 +6,7 @@ import { getCompany, getCompanyRelations } from "@/lib/queries/companies";
 import { deleteCompany } from "@/lib/actions/companies";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -17,6 +18,7 @@ export default async function CompanyDetail({ params }: { params: Promise<{ id: 
   const c = (await getCompany(supabase, id)) as any;
   if (!c) notFound();
   const rel = await getCompanyRelations(supabase, id);
+  const extHref = (u: string) => (/^https?:\/\//i.test(u) ? u : `https://${u}`);
 
   return (
     <AppShell active="companies" user={shellUser(profile)}>
@@ -24,8 +26,8 @@ export default async function CompanyDetail({ params }: { params: Promise<{ id: 
       <PageHeader
         title={c.name}
         crumb="dataroom / companies"
-        sub={<><Pill tone="info">{label(c.type)}</Pill>{c.country && <span>{c.country}</span>}{c.website && <span>{c.website}</span>}</>}
-        actions={<><Link href={`/companies/${id}/edit`} className="btn outline sm">Edit</Link><form action={deleteCompany.bind(null, id)}><button className="btn outline sm" type="submit">Delete</button></form></>}
+        sub={<><Pill tone="info">{label(c.type)}</Pill>{c.country && <span>{c.country}</span>}{c.website && <a href={extHref(c.website)} target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>{c.website} ↗</a>}</>}
+        actions={<><Link href={`/companies/${id}/edit`} className="btn outline sm">Edit</Link><ConfirmForm action={deleteCompany.bind(null, id)} message={`Delete company "${c.name}"? This can't be undone.`}><button className="btn outline sm" type="submit">Delete</button></ConfirmForm></>}
       />
       <div className="two-col">
         <div className="stack">
@@ -57,7 +59,7 @@ export default async function CompanyDetail({ params }: { params: Promise<{ id: 
               <div className="sr"><span className="k">Type</span><span className="v">{label(c.type)}</span></div>
               <div className="sr"><span className="k">Country</span><span className="v">{c.country ?? "—"}</span></div>
               <div className="sr"><span className="k">VAT / Tax ID</span><span className="v">{c.vat_id ?? "—"}</span></div>
-              <div className="sr"><span className="k">Website</span><span className="v">{c.website ?? "—"}</span></div>
+              <div className="sr"><span className="k">Website</span><span className="v">{c.website ? <a href={extHref(c.website)} target="_blank" rel="noreferrer" style={{ color: "var(--accent)" }}>{c.website}</a> : "—"}</span></div>
             </div>
           </div>
         </div>
