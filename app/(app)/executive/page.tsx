@@ -27,7 +27,7 @@ export default async function ExecutivePage() {
           <div className="kpi-row">
             <div className="kpi"><div className="l">Weighted pipeline</div><div className="v tnum">{money(x.kpis.weighted)}</div><div className="sub2">{x.kpis.openCount} open · {money(x.kpis.openValue)} gross</div></div>
             <div className="kpi"><div className="l">Won this quarter</div><div className="v tnum">{money(x.kpis.wonQtdValue)}</div><div className="sub2">{x.kpis.wonQtdCount} deals closed</div></div>
-            <div className="kpi"><div className="l">Win rate</div><div className="v tnum">{Math.round(x.kpis.winRate * 100)}%</div><div className="sub2">won / decided, quarter</div></div>
+            <div className="kpi"><div className="l">Win rate</div><div className="v tnum">{Math.round(x.kpis.winRate * 100)}%</div><div className="sub2">{x.kpis.wonQtdCount}/{x.kpis.decidedQtd} decided · quarter</div></div>
             <div className="kpi"><div className="l">Gross commission</div><div className="v tnum">{money(x.kpis.commissionEst)}</div><div className="sub2">estimated · all won</div></div>
           </div>
 
@@ -37,7 +37,7 @@ export default async function ExecutivePage() {
                 <div className="panel-h" style={{ padding: "14px 16px 0" }}><h4>Broker leaderboard</h4><span className="sub">{x.brokers.length}</span></div>
                 <table className="tbl">
                   <thead>
-                    <tr><th>Broker</th><th className="num">Open (wtd)</th><th className="num">Open #</th><th className="num">Won</th><th className="num">Won value</th></tr>
+                    <tr><th>Broker</th><th className="num">Open (wtd)</th><th className="num">Open&nbsp;#</th><th className="num">Won</th><th className="num">Won value</th></tr>
                   </thead>
                   <tbody>
                     {x.brokers.map((b) => (
@@ -85,7 +85,7 @@ export default async function ExecutivePage() {
               </div>
 
               <div className="panel">
-                <div className="panel-h"><h4>Recent wins</h4><span className="sub">{x.recentWon.length}</span></div>
+                <div className="panel-h"><h4>Recent wins</h4><span className="sub">{x.recentWon.length}</span><a href="/pipeline?status=won" className="actions">View all →</a></div>
                 {x.recentWon.length ? (
                   <div className="linked-records">
                     {x.recentWon.map((w, i) => (

@@ -26,6 +26,7 @@ export type Executive = {
     openCount: number;
     wonQtdValue: number;
     wonQtdCount: number;
+    decidedQtd: number;
     winRate: number; // 0..1 over the quarter
     commissionEst: number;
     inventoryValue: number;
@@ -43,6 +44,7 @@ type Opp = {
   status: string;
   lob: string;
   won_at: string | null;
+  stage_entered_at: string | null;
   assigned_broker: string | null;
   title: string;
   stage: { probability: number | null } | null;
@@ -60,7 +62,7 @@ export async function getExecutive(supabase: SupabaseClient, orgId: string): Pro
   const [{ data: oppData }, { data: profData }, { data: yachtData }] = await Promise.all([
     supabase
       .from("opportunities")
-      .select("value, probability, status, lob, won_at, assigned_broker, title, stage:lob_stages(probability)")
+      .select("value, probability, status, lob, won_at, stage_entered_at, assigned_broker, title, stage:lob_stages(probability)")
       .eq("org_id", orgId),
     supabase.from("profiles").select("id, full_name").eq("org_id", orgId),
     supabase.from("yachts").select("status, price").eq("org_id", orgId),
@@ -80,7 +82,9 @@ export async function getExecutive(supabase: SupabaseClient, orgId: string): Pro
   const weighted = open.reduce((s, o) => s + wq(o), 0);
 
   const wonQtd = won.filter((o) => o.won_at && o.won_at >= qStart);
-  const lostQtd = lost.filter((o) => o.won_at == null); // lost deals have no won_at; count all this period approximated by created — use all lost
+  // Lost deals carry no won_at; approximate "lost this quarter" by when they
+  // entered their (lost) stage, mirroring the won-this-quarter window.
+  const lostQtd = lost.filter((o) => o.stage_entered_at && o.stage_entered_at >= qStart);
   const wonQtdValue = wonQtd.reduce((s, o) => s + (o.value ?? 0), 0);
   const decided = wonQtd.length + lostQtd.length;
   const winRate = decided ? wonQtd.length / decided : 0;
@@ -148,7 +152,7 @@ export async function getExecutive(supabase: SupabaseClient, orgId: string): Pro
 
   return {
     hasData: opps.length > 0 || yachts.length > 0,
-    kpis: { openValue, weighted, openCount: open.length, wonQtdValue, wonQtdCount: wonQtd.length, winRate, commissionEst, inventoryValue, fleetActive },
+    kpis: { openValue, weighted, openCount: open.length, wonQtdValue, wonQtdCount: wonQtd.length, decidedQtd: decided, winRate, commissionEst, inventoryValue, fleetActive },
     brokers,
     lobs,
     fleet,
