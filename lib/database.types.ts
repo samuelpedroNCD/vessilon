@@ -1955,6 +1955,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          notifications_seen_at: string | null
           office_id: string | null
           org_id: string
           role: Database["public"]["Enums"]["app_role"]
@@ -1967,6 +1968,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          notifications_seen_at?: string | null
           office_id?: string | null
           org_id: string
           role?: Database["public"]["Enums"]["app_role"]
@@ -1979,6 +1981,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          notifications_seen_at?: string | null
           office_id?: string | null
           org_id?: string
           role?: Database["public"]["Enums"]["app_role"]

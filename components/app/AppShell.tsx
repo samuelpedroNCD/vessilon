@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import TideMark from "@/components/TideMark";
 import UserMenu from "./UserMenu";
 import CommandPalette from "./CommandPalette";
+import NotificationBell from "./NotificationBell";
 
 type IconKey =
   | "overview" | "inbox" | "tasks" | "pipeline" | "listings" | "buyers"
@@ -97,10 +98,7 @@ export default function AppShell({
           <a className="nav-btn" aria-label="Inbox" href="/inbox">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4l6 4 6-4M2 4v8h12V4M2 4l-.5-.5h13L14 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </a>
-          <a className="nav-btn" aria-label="Notifications" href="/inbox">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 7a5 5 0 0110 0v3l1 2H2l1-2V7zM6 14h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            <span className="pulse" />
-          </a>
+          <NotificationBell />
           <div style={{ width: 1, height: 22, background: "var(--line)", margin: "0 6px" }} />
           <UserMenu name={user.name} email={user.email} initials={user.initials} />
         </div>
