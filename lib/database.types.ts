@@ -269,6 +269,160 @@ export type Database = {
           },
         ]
       }
+      closing_milestones: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_at: string | null
+          due_on: string | null
+          id: string
+          opportunity_id: string
+          org_id: string
+          position: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          due_on?: string | null
+          id?: string
+          opportunity_id: string
+          org_id: string
+          position?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          due_on?: string | null
+          id?: string
+          opportunity_id?: string
+          org_id?: string
+          position?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "closing_milestones_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "closing_milestones_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      closing_parties: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          opportunity_id: string
+          org_id: string
+          phone: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          opportunity_id: string
+          org_id: string
+          phone?: string | null
+          role?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          opportunity_id?: string
+          org_id?: string
+          phone?: string | null
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "closing_parties_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "closing_parties_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commission_splits: {
+        Row: {
+          amount: number | null
+          broker_id: string | null
+          created_at: string
+          id: string
+          name: string | null
+          opportunity_id: string
+          org_id: string
+          pct: number | null
+        }
+        Insert: {
+          amount?: number | null
+          broker_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          opportunity_id: string
+          org_id: string
+          pct?: number | null
+        }
+        Update: {
+          amount?: number | null
+          broker_id?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          opportunity_id?: string
+          org_id?: string
+          pct?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_splits_broker_id_fkey"
+            columns: ["broker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_splits_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_splits_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           country: string | null
@@ -938,10 +1092,13 @@ export type Database = {
           assigned_broker: string | null
           client_id: string | null
           close_reason: string | null
+          closing_date: string | null
           created_at: string
           created_by: string | null
           currency: string | null
           details: Json
+          escrow_amount: number | null
+          escrow_status: string | null
           expected_close: string | null
           id: string
           lead_id: string | null
@@ -962,10 +1119,13 @@ export type Database = {
           assigned_broker?: string | null
           client_id?: string | null
           close_reason?: string | null
+          closing_date?: string | null
           created_at?: string
           created_by?: string | null
           currency?: string | null
           details?: Json
+          escrow_amount?: number | null
+          escrow_status?: string | null
           expected_close?: string | null
           id?: string
           lead_id?: string | null
@@ -986,10 +1146,13 @@ export type Database = {
           assigned_broker?: string | null
           client_id?: string | null
           close_reason?: string | null
+          closing_date?: string | null
           created_at?: string
           created_by?: string | null
           currency?: string | null
           details?: Json
+          escrow_amount?: number | null
+          escrow_status?: string | null
           expected_close?: string | null
           id?: string
           lead_id?: string | null
