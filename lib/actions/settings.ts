@@ -27,6 +27,7 @@ export async function updateOrg(fd: FormData) {
   if (error) throw new Error(error.message);
   await recordAudit({ action: "update", entityType: "org", entityId: profile.org_id, summary: "Updated workspace settings" });
   revalidatePath("/settings");
+  redirect("/settings?saved=org");
 }
 
 export async function setUserRole(userId: string, fd: FormData) {
@@ -41,4 +42,5 @@ export async function setUserRole(userId: string, fd: FormData) {
   if (error) throw new Error(error.message);
   await recordAudit({ action: "role_change", entityType: "user", entityId: userId, entityLabel: (target as { full_name?: string } | null)?.full_name ?? null, summary: `Role set to ${role}`, meta: { role } });
   revalidatePath("/settings");
+  redirect("/settings?saved=role");
 }

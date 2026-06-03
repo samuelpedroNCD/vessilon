@@ -5,22 +5,27 @@ import { getOrg, listUsers } from "@/lib/queries/settings";
 import { updateOrg, setUserRole } from "@/lib/actions/settings";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import { Pill, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const ROLES = ["admin", "executive", "senior_broker", "broker", "marketing", "operations", "client"];
 
-export default async function SettingsPage() {
+export default async function SettingsPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const profile = await getProfile();
   if (!profile) redirect("/login");
+  const sp = await searchParams;
   const supabase = await createClient();
   const [org, users] = await Promise.all([getOrg(supabase), listUsers(supabase)]);
   const o = (org ?? {}) as any;
   const isAdmin = profile.role === "admin";
+  const saved = sp.saved === "org" ? "Organisation settings saved." : sp.saved === "role" ? "Role updated." : null;
+  const roleTone = (r: string) => (r === "admin" ? "warn" : r === "executive" || r === "senior_broker" ? "info" : "gray");
 
   return (
     <AppShell active="settings" user={shellUser(profile)}>
       <PageHeader title="Settings" crumb="settings / organisation" />
+      {saved && <div className="savebar">✓ {saved}</div>}
 
       <div className="two-col">
         <div className="stack">
@@ -58,15 +63,15 @@ export default async function SettingsPage() {
               <tr key={u.id}>
                 <td><strong style={{ fontWeight: 600 }}>{u.full_name ?? "—"}</strong>{u.title ? <div style={{ fontSize: 11, color: "var(--ink-3)" }}>{u.title}</div> : null}</td>
                 <td>{u.email ?? "—"}</td>
-                <td><Pill tone="info">{label(u.role)}</Pill></td>
+                <td><Pill tone={roleTone(u.role)}>{label(u.role)}</Pill></td>
                 {isAdmin && (
                   <td>
-                    <form action={setUserRole.bind(null, u.id)} style={{ display: "flex", gap: 6 }}>
+                    <ConfirmForm action={setUserRole.bind(null, u.id)} message={`Change ${u.full_name ?? "this user"}'s role?`} className="rolechg">
                       <select name="role" defaultValue={u.role} style={{ padding: "5px 8px", border: "1px solid var(--line-2)", borderRadius: 6, fontSize: 12 }}>
                         {ROLES.map((r) => <option key={r} value={r}>{label(r)}</option>)}
                       </select>
                       <button className="btn outline sm" type="submit">Set</button>
-                    </form>
+                    </ConfirmForm>
                   </td>
                 )}
               </tr>

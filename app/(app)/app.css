@@ -507,3 +507,7 @@
 .app .mkt-gen .doc-sel { font-size: 12px; padding: 6px 8px; }
 .app .copylink { border: none; background: transparent; color: var(--ink-3); cursor: pointer; font-size: 11px; padding: 0 2px; }
 .app .copylink:hover { color: var(--accent); }
+
+/* settings save banner + role-change form */
+.app .savebar { margin: 0 0 16px; padding: 10px 14px; border-radius: 9px; background: #eef2ef; color: var(--accent); font-size: 13px; font-weight: 500; border: 1px solid rgba(15,59,46,0.15); }
+.app .rolechg { display: flex; gap: 6px; }
