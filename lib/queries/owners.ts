@@ -1,8 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeSearch } from "@/lib/queries/search";
 
 export async function listOwners(supabase: SupabaseClient, f: { q?: string }) {
   let query = supabase.from("owners").select("id, name, email, phone, yachts:yachts(count)").order("name");
-  if (f.q) query = query.or(`name.ilike.%${f.q}%,email.ilike.%${f.q}%`);
+  const term = sanitizeSearch(f.q);
+  if (term) query = query.or(`name.ilike.%${term}%,email.ilike.%${term}%`);
   const { data } = await query;
   return (data ?? []) as unknown as OwnerRow[];
 }

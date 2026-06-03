@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeSearch } from "@/lib/queries/search";
 
 // Untyped client param (select strings not schema-validated) — consistent with
 // lib/queries/overview.ts; pages pass the typed client, assignable here.
@@ -15,7 +16,8 @@ export async function listYachts(supabase: SupabaseClient, f: YachtFilters) {
   if (f.status) query = query.eq("status", f.status);
   if (f.lob) query = query.eq("lob", f.lob);
   if (f.type) query = query.eq("type", f.type);
-  if (f.q) query = query.or(`name.ilike.%${f.q}%,hull_id.ilike.%${f.q}%,builder.ilike.%${f.q}%`);
+  const term = sanitizeSearch(f.q);
+  if (term) query = query.or(`name.ilike.%${term}%,hull_id.ilike.%${term}%,builder.ilike.%${term}%`);
   const { data } = await query;
   return (data ?? []) as unknown as YachtRow[];
 }

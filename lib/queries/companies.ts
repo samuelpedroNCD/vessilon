@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeSearch } from "@/lib/queries/search";
 
 export type CompanyFilters = { q?: string; type?: string };
 
@@ -8,7 +9,8 @@ export async function listCompanies(supabase: SupabaseClient, f: CompanyFilters)
     .select("id, name, type, country, website, clients:clients(count), owners:owners(count)")
     .order("name");
   if (f.type) query = query.eq("type", f.type);
-  if (f.q) query = query.or(`name.ilike.%${f.q}%,country.ilike.%${f.q}%`);
+  const term = sanitizeSearch(f.q);
+  if (term) query = query.or(`name.ilike.%${term}%,country.ilike.%${term}%`);
   const { data } = await query;
   return (data ?? []) as unknown as CompanyRow[];
 }

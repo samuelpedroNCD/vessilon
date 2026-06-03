@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeSearch } from "@/lib/queries/search";
 
 export type LeadFilters = { q?: string; status?: string; lob?: string; temperature?: string };
 
@@ -10,7 +11,8 @@ export async function listLeads(supabase: SupabaseClient, f: LeadFilters) {
   if (f.status) query = query.eq("status", f.status);
   if (f.lob) query = query.eq("lob", f.lob);
   if (f.temperature) query = query.eq("temperature", f.temperature);
-  if (f.q) query = query.or(`name.ilike.%${f.q}%,email.ilike.%${f.q}%`);
+  const term = sanitizeSearch(f.q);
+  if (term) query = query.or(`name.ilike.%${term}%,email.ilike.%${term}%`);
   const { data } = await query;
   return (data ?? []) as unknown as LeadRow[];
 }

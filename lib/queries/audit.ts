@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeSearch } from "@/lib/queries/search";
 
 export type AuditFilters = { entity?: string; action?: string; q?: string };
 
@@ -25,7 +26,8 @@ export async function listAudit(
     .limit(limit);
   if (f.entity) query = query.eq("entity_type", f.entity);
   if (f.action) query = query.eq("action", f.action);
-  if (f.q) query = query.or(`entity_label.ilike.%${f.q}%,summary.ilike.%${f.q}%,actor_name.ilike.%${f.q}%`);
+  const term = sanitizeSearch(f.q);
+  if (term) query = query.or(`entity_label.ilike.%${term}%,summary.ilike.%${term}%,actor_name.ilike.%${term}%`);
   const { data } = await query;
   return (data ?? []) as unknown as AuditEntry[];
 }

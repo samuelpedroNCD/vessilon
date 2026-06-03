@@ -1,8 +1,27 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { yachtImageUrl } from "@/lib/fleet/photo";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ token: string }> }): Promise<Metadata> {
+  const { token } = await params;
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("public_brochure", { p_token: token });
+  if (!data) return { title: "Brochure not found · Vessilon" };
+  const y = data as { name: string; builder: string | null; year: number | null; loa_m: number | null; org: string; hero_image: string | null; type: string | null };
+  const title = `${y.name} — ${y.org}`;
+  const description = [y.builder, y.year, y.loa_m ? `${y.loa_m} m` : null].filter(Boolean).join(" · ") || "Yacht brochure";
+  const image = y.hero_image ? yachtImageUrl(y.hero_image) : (y.type === "sail" ? "/yachts/sail-01.jpg" : "/yachts/motor-01.jpg");
+  return {
+    title,
+    description,
+    robots: { index: false }, // share-link only; don't index private listings
+    openGraph: { title, description, images: [image], type: "website" },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
+  };
+}
 
 function money(n: number | null, currency = "USD"): string {
   if (!n) return "Price on application";

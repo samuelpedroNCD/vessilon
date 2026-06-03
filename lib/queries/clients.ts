@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { sanitizeSearch } from "@/lib/queries/search";
 
 export type ClientFilters = { q?: string; temperature?: string; category?: string };
 
@@ -9,7 +10,8 @@ export async function listClients(supabase: SupabaseClient, f: ClientFilters) {
     .order("created_at", { ascending: false });
   if (f.temperature) query = query.eq("temperature", f.temperature);
   if (f.category) query = query.contains("categories", [f.category]);
-  if (f.q) query = query.or(`name.ilike.%${f.q}%,email.ilike.%${f.q}%`);
+  const term = sanitizeSearch(f.q);
+  if (term) query = query.or(`name.ilike.%${term}%,email.ilike.%${term}%`);
   const { data } = await query;
   return (data ?? []) as unknown as ClientRow[];
 }

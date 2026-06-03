@@ -379,10 +379,17 @@
 @media (max-width: 900px) {
   .app { grid-template-columns: 1fr; }
   .app .side { display: none; }
-  .app .topbar { grid-template-columns: auto 1fr auto; }
+  .app .topbar { grid-template-columns: 1fr auto; }
   .app .kpi-row { grid-template-columns: 1fr 1fr; }
   .app .split { grid-template-columns: 1fr; }
   .app main { padding: 20px 18px; }
+  /* command search collapses below the title at narrow widths — hide it */
+  .app .topbar > div:nth-child(2) { display: none; }
+}
+@media (max-width: 560px) {
+  .app .kpi-row { grid-template-columns: 1fr; }
+  .app .two-col { grid-template-columns: 1fr; }
+  .app .topbar .ws { display: none; }
 }
 
 /* ============================ Documents panel ============================ */
