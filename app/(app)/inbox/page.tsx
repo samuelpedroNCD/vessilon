@@ -62,7 +62,7 @@ export default async function InboxPage() {
             <div className="stub">
               <b>Email sync isn&rsquo;t connected yet.</b> Link a Gmail or Microsoft 365 mailbox (or an IMAP inbox) to triage client mail, auto-log replies against deals, and let agents draft responses in your voice.
               <div style={{ marginTop: 10 }}>
-                <span className="btn outline sm" style={{ opacity: 0.6 }}>Connect mailbox →</span>
+                <button className="btn outline sm" type="button" disabled title="Coming soon" style={{ cursor: "not-allowed" }}>Connect mailbox →</button>
               </div>
             </div>
           </div>

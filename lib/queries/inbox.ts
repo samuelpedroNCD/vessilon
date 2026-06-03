@@ -74,13 +74,16 @@ export async function getInbox(supabase: SupabaseClient, orgId: string, userId: 
     .slice(0, 20);
 
   const now = Date.now();
-  const tasks: InboxTask[] = ((tk ?? []) as Array<{ id: string; title: string; due_at: string | null; priority: string | null }>).map((t) => ({
-    id: t.id,
-    title: t.title,
-    due_at: t.due_at,
-    priority: t.priority,
-    overdue: !!t.due_at && new Date(t.due_at).getTime() < now,
-  }));
+  const tasks: InboxTask[] = ((tk ?? []) as Array<{ id: string; title: string; due_at: string | null; priority: string | null }>)
+    .map((t) => ({
+      id: t.id,
+      title: t.title,
+      due_at: t.due_at,
+      priority: t.priority,
+      overdue: !!t.due_at && new Date(t.due_at).getTime() < now,
+    }))
+    // overdue first, then keep the due-date ascending order from the query
+    .sort((a, b) => (b.overdue ? 1 : 0) - (a.overdue ? 1 : 0));
 
   return {
     feed,
