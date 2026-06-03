@@ -508,6 +508,20 @@
 .app .copylink { border: none; background: transparent; color: var(--ink-3); cursor: pointer; font-size: 11px; padding: 0 2px; }
 .app .copylink:hover { color: var(--accent); }
 
+/* command palette */
+.app .cmdk { width: 100%; border: none; cursor: text; font: inherit; text-align: left; }
+.cmdk-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(15,23,20,0.35); backdrop-filter: blur(2px); display: flex; align-items: flex-start; justify-content: center; padding-top: 12vh; }
+.cmdk-panel { width: min(640px, 92vw); background: #fffefb; border: 1px solid #e7e4dc; border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); overflow: hidden; }
+.cmdk-input { width: 100%; border: none; border-bottom: 1px solid #e7e4dc; padding: 16px 18px; font: inherit; font-size: 16px; outline: none; background: transparent; color: #15171a; }
+.cmdk-results { max-height: 56vh; overflow-y: auto; padding: 6px; }
+.cmdk-empty { padding: 22px 16px; color: #9aa19d; font-size: 13px; text-align: center; }
+.cmdk-group-h { font: 600 9.5px var(--font-mono, monospace); text-transform: uppercase; letter-spacing: 0.07em; color: #9aa19d; padding: 10px 12px 4px; }
+.cmdk-hit { display: flex; align-items: center; gap: 12px; width: 100%; border: none; background: transparent; text-align: left; padding: 9px 12px; border-radius: 8px; cursor: pointer; }
+.cmdk-hit.active { background: #f0f3ef; }
+.cmdk-type { flex: 0 0 auto; font: 600 9px var(--font-mono, monospace); text-transform: uppercase; letter-spacing: 0.04em; color: #0f3b2e; background: #eef2ef; border-radius: 999px; padding: 3px 8px; }
+.cmdk-label { display: flex; flex-direction: column; font-size: 14px; color: #15171a; min-width: 0; }
+.cmdk-label small { font-size: 11.5px; color: #9aa19d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
 /* charter timeline rows */
 .app .charter-row { display: grid; grid-template-columns: 1.6fr 1.2fr 1fr auto auto; gap: 12px; align-items: center; padding: 10px 2px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink-1); }
 .app .charter-row:first-of-type { border-top: none; }
