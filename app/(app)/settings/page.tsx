@@ -2,10 +2,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
 import { getOrg, listUsers } from "@/lib/queries/settings";
+import { listInvitations } from "@/lib/queries/invites";
 import { updateOrg, setUserRole } from "@/lib/actions/settings";
+import { createInvite, revokeInvite } from "@/lib/actions/invites";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import ConfirmForm from "@/components/app/ConfirmForm";
+import CopyLinkButton from "@/components/app/CopyLinkButton";
 import { Pill, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -16,7 +19,8 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   if (!profile) redirect("/login");
   const sp = await searchParams;
   const supabase = await createClient();
-  const [org, users] = await Promise.all([getOrg(supabase), listUsers(supabase)]);
+  const [org, users, invites] = await Promise.all([getOrg(supabase), listUsers(supabase), listInvitations(supabase)]);
+  const pendingInvites = (invites as any[]).filter((i) => i.status === "pending");
   const o = (org ?? {}) as any;
   const isAdmin = profile.role === "admin";
   const saved = sp.saved === "org" ? "Organisation settings saved." : sp.saved === "role" ? "Role updated." : null;
@@ -53,6 +57,25 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
           </div>
         </div>
       </div>
+
+      {isAdmin && (
+        <div className="panel" style={{ marginTop: 14 }}>
+          <div className="panel-h"><h4>Invite teammates</h4><span className="sub">{pendingInvites.length} pending</span></div>
+          <form action={createInvite} className="doc-upload-row" style={{ marginBottom: pendingInvites.length ? 14 : 0 }}>
+            <input name="email" type="email" className="doc-inp" placeholder="teammate@brokerage.com" />
+            <select name="role" className="doc-sel" defaultValue="broker">{ROLES.filter((r) => r !== "client").map((r) => <option key={r} value={r}>{label(r)}</option>)}</select>
+            <button className="btn primary sm" type="submit">Create invite link</button>
+          </form>
+          {pendingInvites.map((i: any) => (
+            <div className="doc-row" key={i.id} style={{ gap: 10 }}>
+              <span style={{ flex: 1 }}>{i.email ?? "Anyone with the link"}<small style={{ display: "block", color: "var(--ink-3)" }}>{label(i.role)} · invited {new Date(i.created_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}</small></span>
+              <CopyLinkButton path={`/signup?invite=${i.token}`} label="Copy link" />
+              <ConfirmForm action={revokeInvite.bind(null, i.id)} message="Revoke this invite?"><button className="doc-del" type="submit" aria-label="Revoke">✕</button></ConfirmForm>
+            </div>
+          ))}
+          <p className="doc-empty" style={{ marginTop: 10 }}>Share the link with your teammate — they join this workspace with the chosen role when they sign up. (No email is sent.)</p>
+        </div>
+      )}
 
       <div className="panel" style={{ padding: 0, marginTop: 14 }}>
         <div className="panel-h" style={{ padding: "14px 20px" }}><h4>Users &amp; roles</h4><span className="sub">{users.length}</span></div>

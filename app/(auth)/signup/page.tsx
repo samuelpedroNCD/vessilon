@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TideMark from "@/components/TideMark";
@@ -41,6 +41,20 @@ export default function SignupPage() {
   const set = (k: keyof typeof form, v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  // Invite link: ?invite=token joins an existing workspace with a set role.
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
+  const [invite, setInvite] = useState<{ org: string; role: string } | null>(null);
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get("invite");
+    if (!t) return;
+    setInviteToken(t);
+    (async () => {
+      const supabase = createClient();
+      const { data } = await supabase.rpc("invite_info", { p_token: t });
+      if (data) setInvite({ org: (data as any).org, role: (data as any).role });
+    })();
+  }, []);
+
   function next() {
     setError(null);
     if (step === 1) {
@@ -77,6 +91,7 @@ export default function SignupPage() {
           region: form.region,
           role: form.role,
           team_size: form.teamSize,
+          ...(inviteToken ? { invite_token: inviteToken } : {}),
         },
       },
     });
@@ -166,6 +181,11 @@ export default function SignupPage() {
         </div>
 
         <div className={styles.formWrapWide}>
+          {invite && (
+            <div className={styles.errorBox} style={{ background: "#eef2ef", color: "#0f3b2e", border: "1px solid rgba(15,59,46,0.2)" }}>
+              You&rsquo;re joining <b>{invite.org}</b> as <b>{invite.role.replace(/_/g, " ")}</b>. Complete signup to accept.
+            </div>
+          )}
           {error && <div className={styles.errorBox}>{error}</div>}
 
           {step === 1 && (
