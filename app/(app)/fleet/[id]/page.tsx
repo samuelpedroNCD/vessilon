@@ -6,6 +6,7 @@ import { getYacht, getYachtRelations } from "@/lib/queries/fleet";
 import { deleteYacht } from "@/lib/actions/yachts";
 import { money } from "@/lib/queries/overview";
 import AppShell from "@/components/app/AppShell";
+import AgentCard from "@/components/app/AgentCard";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -91,11 +92,11 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
             {rel.opps.length ? (
               <div className="linked-records">
                 {rel.opps.map((o: any) => (
-                  <div className="lr" key={o.id}>
+                  <Link href={`/pipeline/${o.id}`} className="lr row-link" key={o.id}>
                     <span className="ic">OP</span>
                     <span className="nm">{o.title}<small>{o.stage?.name ?? ""}{o.client?.name ? ` · ${o.client.name}` : ""}</small></span>
                     <span className="end">{o.value ? money(o.value) : "—"}</span>
-                  </div>
+                  </Link>
                 ))}
               </div>
             ) : <p style={{ fontSize: 13, color: "var(--ink-3)" }}>No linked opportunities.</p>}
@@ -127,6 +128,12 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
               <div className="mini-kpi"><div className="l">Status</div><div className="v">{label(y.status)}</div></div>
             </div>
           </div>
+
+          <AgentCard
+            title="Comps agent"
+            body={<>I refreshed the comp set for <b>{y.name}</b>. The adjusted mean sits {y.price ? `near ${money(y.price)}` : "in range"} — want me to draft a price-position note for the owner?</>}
+            primary="Review comps"
+          />
 
           <div className="panel">
             <div className="panel-h"><h4>Linked records</h4></div>

@@ -45,12 +45,13 @@ Yacht-centric schema, `org_id` on every table, RLS by org + role + assignment. A
 - [x] Tasks `/tasks` (list, filters, create, **complete/reopen** verified) + Interactions `/interactions` feed + quick-log
 - [x] All under RLS via server actions; sidebar wired (Leads/Clients/Fleet/Owners/Tasks/Activity); empty-states for new orgs
 
-## Phase 5 — Pipeline (multi-LOB) ◀ (next)
-- [ ] Opportunities model + Kanban + List views
-- [ ] Sale stages first, then Charter / New Builds / Co-Ownership / Trade / Services
-- [ ] Weighted forecast, SLA/aging indicators, stage audit log
+## Phase 5 — Pipeline (multi-LOB) ✓
+- [x] Opportunities: `/pipeline` board (kanban by stage) + list view, LOB tabs (all 6), KPI strip (weighted/gross/open/won)
+- [x] Deal detail `/pipeline/[id]` (stage stepper, **move-stage** action verified, negotiation timeline, commission calc, linked yacht/client, log activity) + create/edit/delete
+- [x] Weighted forecast from stage probability; cross-links from dashboard + fleet/client/lead opp rows
+- [ ] (later) drag-and-drop board, SLA/aging flags, stage audit log
 
-## Phase 6 — Brochures + AI listing copy
+## Phase 6 — Brochures + AI listing copy ◀ (next)
 - [ ] Brochure generation (Sale / Charter / Full-Spec) from yacht data
 - [ ] AI listing descriptions (Claude API, reviewable before publish)
 - [ ] Tracked share links + auto-logged interactions

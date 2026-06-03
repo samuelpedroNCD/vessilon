@@ -158,7 +158,7 @@ export default async function OverviewPage() {
         <div className="panel-h">
           <h4>Pipeline by stage</h4>
           <span className="sub">{openDeals} active deals · {money(ov.stages.reduce((a, s) => a + (s.position !== 999 ? s.value : 0), 0))}</span>
-          <span className="actions">Open pipeline →</span>
+          <a href="/pipeline" className="actions">Open pipeline →</a>
         </div>
         {ov.stages.length > 0 ? (
           <div className="stagebar">

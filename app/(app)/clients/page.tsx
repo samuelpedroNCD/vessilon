@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
-import { listClients, type ClientFilters } from "@/lib/queries/clients";
+import { listClients, clientStats, type ClientFilters } from "@/lib/queries/clients";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import Toolbar from "@/components/app/Toolbar";
@@ -24,11 +24,17 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
   const sp = await searchParams;
   const filters: ClientFilters = { q: sp.q, temperature: sp.temperature, category: sp.category };
   const supabase = await createClient();
-  const clients = await listClients(supabase, filters);
+  const [clients, stats] = await Promise.all([listClients(supabase, filters), clientStats(supabase)]);
 
   return (
     <AppShell active="buyers" user={shellUser(profile)}>
       <PageHeader title="Clients" crumb="brokerage / clients" actions={<Link href="/clients/new" className="btn primary">+ Add client</Link>} />
+      <div className="kpi-row">
+        <div className="kpi"><div className="l">Total clients</div><div className="v tnum">{stats.total}</div></div>
+        <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div></div>
+        <div className="kpi"><div className="l">Buyers</div><div className="v tnum">{stats.buyers}</div></div>
+        <div className="kpi"><div className="l">Sellers</div><div className="v tnum">{stats.sellers}</div></div>
+      </div>
       <Toolbar
         current={filters as Record<string, string | undefined>}
         searchPlaceholder="Search name or email…"
@@ -46,7 +52,7 @@ export default async function ClientsPage({ searchParams }: { searchParams: Prom
             <tbody>
               {clients.map((c) => (
                 <tr key={c.id}>
-                  <td><Link href={`/clients/${c.id}`} className="vc-cell row-link"><span className="nm">{c.name}<small>{c.email ?? c.phone ?? ""}</small></span></Link></td>
+                  <td><Link href={`/clients/${c.id}`} className="vc-cell row-link stretch"><span className="nm">{c.name}<small>{c.email ?? c.phone ?? ""}</small></span></Link></td>
                   <td>{c.company?.name ?? "—"}</td>
                   <td>{c.categories?.length ? c.categories.map(label).join(", ") : "—"}</td>
                   <td>{c.temperature ? <Pill tone={toneFor(c.temperature)}>{label(c.temperature)}</Pill> : "—"}</td>

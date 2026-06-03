@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
-import { listTasks } from "@/lib/queries/tasks";
+import { listTasks, taskStats } from "@/lib/queries/tasks";
 import { setTaskStatus } from "@/lib/actions/tasks";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
@@ -26,11 +26,20 @@ export default async function TasksPage({ searchParams }: { searchParams: Promis
   if (!profile) redirect("/login");
   const sp = await searchParams;
   const supabase = await createClient();
-  const tasks = (await listTasks(supabase, { status: sp.status, priority: sp.priority })) as any[];
+  const [tasks, stats] = await Promise.all([
+    listTasks(supabase, { status: sp.status, priority: sp.priority }) as Promise<any[]>,
+    taskStats(supabase),
+  ]);
 
   return (
     <AppShell active="tasks" user={shellUser(profile)}>
       <PageHeader title="Tasks" crumb="brokerage / tasks" actions={<Link href="/tasks/new" className="btn primary">+ New task</Link>} />
+      <div className="kpi-row">
+        <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div></div>
+        <div className="kpi"><div className="l">Due today</div><div className="v tnum">{stats.dueToday}</div></div>
+        <div className="kpi"><div className="l">Overdue</div><div className="v tnum alert">{stats.overdue}</div></div>
+        <div className="kpi"><div className="l">Completed</div><div className="v tnum">{stats.completed}</div></div>
+      </div>
       <Toolbar
         current={{ status: sp.status, priority: sp.priority }}
         filters={[

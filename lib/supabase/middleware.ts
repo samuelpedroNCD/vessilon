@@ -10,6 +10,7 @@ const PROTECTED_PREFIXES = [
   "/owners",
   "/tasks",
   "/interactions",
+  "/pipeline",
 ];
 
 /**

@@ -71,7 +71,7 @@ export default async function FleetPage({
               {yachts.map((y) => (
                 <tr key={y.id}>
                   <td>
-                    <Link href={`/fleet/${y.id}`} className="vc-cell row-link">
+                    <Link href={`/fleet/${y.id}`} className="vc-cell row-link stretch">
                       <span className={`th vthumb ${y.hero_color ?? ""}`} />
                       <span className="nm">{y.name}<small>{y.hull_id ?? "—"}{y.builder ? ` · ${y.builder}` : ""}</small></span>
                     </Link>

@@ -8,6 +8,7 @@ import { money } from "@/lib/queries/overview";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import LogInteractionForm from "@/components/app/LogInteractionForm";
+import AgentCard from "@/components/app/AgentCard";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -42,7 +43,7 @@ export default async function ClientDetail({ params }: { params: Promise<{ id: s
             {rel.opps.length ? (
               <div className="linked-records">
                 {rel.opps.map((o: any) => (
-                  <div className="lr" key={o.id}><span className="ic">OP</span><span className="nm">{o.title}<small>{o.stage?.name ?? ""}{o.yacht?.name ? ` · ${o.yacht.name}` : ""}</small></span><span className="end">{o.value ? money(o.value) : "—"}</span></div>
+                  <Link href={`/pipeline/${o.id}`} className="lr row-link" key={o.id}><span className="ic">OP</span><span className="nm">{o.title}<small>{o.stage?.name ?? ""}{o.yacht?.name ? ` · ${o.yacht.name}` : ""}</small></span><span className="end">{o.value ? money(o.value) : "—"}</span></Link>
                 ))}
               </div>
             ) : <p style={{ fontSize: 13, color: "var(--ink-3)" }}>No opportunities yet.</p>}
@@ -74,6 +75,11 @@ export default async function ClientDetail({ params }: { params: Promise<{ id: s
         </div>
 
         <div className="stack">
+          <AgentCard
+            title="Relationship agent"
+            body={<><b>{c.name}</b> — {rel.interactions.length ? "last touch logged. I can draft a follow-up referencing their preferences." : "no touchpoints yet. Want me to draft an intro and match fleet to their brief?"}</>}
+            primary="Draft follow-up"
+          />
           <div className="panel">
             <div className="panel-h"><h4>Contact</h4></div>
             <div className="spec-grid">

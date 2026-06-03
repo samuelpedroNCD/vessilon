@@ -29,6 +29,17 @@ export type LeadRow = {
   broker: { full_name: string | null } | null;
 };
 
+export async function leadStats(supabase: SupabaseClient) {
+  const { data } = await supabase.from("leads").select("status, temperature");
+  const rows = (data ?? []) as { status: string; temperature: string | null }[];
+  return {
+    total: rows.length,
+    hot: rows.filter((r) => r.temperature === "hot").length,
+    open: rows.filter((r) => !["converted", "lost", "unqualified"].includes(r.status)).length,
+    converted: rows.filter((r) => r.status === "converted").length,
+  };
+}
+
 export async function getLead(supabase: SupabaseClient, id: string) {
   const { data } = await supabase
     .from("leads")

@@ -27,6 +27,17 @@ export type ClientRow = {
   company: { name: string } | null;
 };
 
+export async function clientStats(supabase: SupabaseClient) {
+  const { data } = await supabase.from("clients").select("categories, temperature");
+  const rows = (data ?? []) as { categories: string[] | null; temperature: string | null }[];
+  return {
+    total: rows.length,
+    hot: rows.filter((r) => r.temperature === "hot").length,
+    buyers: rows.filter((r) => r.categories?.includes("buyer")).length,
+    sellers: rows.filter((r) => r.categories?.includes("seller")).length,
+  };
+}
+
 export async function getClient(supabase: SupabaseClient, id: string) {
   const { data } = await supabase
     .from("clients")

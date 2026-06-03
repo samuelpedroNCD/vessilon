@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
-import { listLeads, type LeadFilters } from "@/lib/queries/leads";
+import { listLeads, leadStats, type LeadFilters } from "@/lib/queries/leads";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import Toolbar from "@/components/app/Toolbar";
@@ -19,11 +19,17 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const filters: LeadFilters = { q: sp.q, status: sp.status, lob: sp.lob, temperature: sp.temperature };
   const supabase = await createClient();
-  const leads = await listLeads(supabase, filters);
+  const [leads, stats] = await Promise.all([listLeads(supabase, filters), leadStats(supabase)]);
 
   return (
     <AppShell active="leads" user={shellUser(profile)}>
       <PageHeader title="Leads" crumb="brokerage / leads" actions={<Link href="/leads/new" className="btn primary">+ Add lead</Link>} />
+      <div className="kpi-row">
+        <div className="kpi"><div className="l">Total leads</div><div className="v tnum">{stats.total}</div></div>
+        <div className="kpi"><div className="l">Open</div><div className="v tnum">{stats.open}</div></div>
+        <div className="kpi"><div className="l">Hot</div><div className="v tnum alert">{stats.hot}</div></div>
+        <div className="kpi"><div className="l">Converted</div><div className="v tnum">{stats.converted}</div></div>
+      </div>
       <Toolbar
         current={filters as Record<string, string | undefined>}
         searchPlaceholder="Search name or email…"
@@ -42,7 +48,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
             <tbody>
               {leads.map((l) => (
                 <tr key={l.id}>
-                  <td><Link href={`/leads/${l.id}`} className="vc-cell row-link"><span className="nm">{l.name ?? "—"}<small>{l.email ?? l.phone ?? ""}</small></span></Link></td>
+                  <td><Link href={`/leads/${l.id}`} className="vc-cell row-link stretch"><span className="nm">{l.name ?? "—"}<small>{l.email ?? l.phone ?? ""}</small></span></Link></td>
                   <td>{label(l.lob)}</td>
                   <td><Pill tone={toneFor(l.status)}>{label(l.status)}</Pill></td>
                   <td>{l.temperature ? <Pill tone={toneFor(l.temperature)}>{label(l.temperature)}</Pill> : "—"}</td>

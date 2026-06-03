@@ -28,7 +28,7 @@ export default async function OwnersPage({ searchParams }: { searchParams: Promi
             <tbody>
               {owners.map((o) => (
                 <tr key={o.id}>
-                  <td><Link href={`/owners/${o.id}`} className="vc-cell row-link"><span className="nm">{o.name}</span></Link></td>
+                  <td><Link href={`/owners/${o.id}`} className="vc-cell row-link stretch"><span className="nm">{o.name}</span></Link></td>
                   <td>{o.email ?? "—"}</td>
                   <td>{o.phone ?? "—"}</td>
                   <td className="tnum">{o.yachts?.[0]?.count ?? 0}</td>
