@@ -24,15 +24,16 @@ RLS · multi-tenant from line one · AI-augmented (reviewable).
 - [x] Overview / "Today" dashboard landing (representative data, personalized from auth) — `app/(app)/dashboard/page.tsx`
 - [ ] Disable email confirmation in Supabase ✓ (done in dashboard) — keep custom SMTP for prod (later)
 
-## Phase 2 — Data model & multi-tenancy
-Yacht-centric schema, `org_id` on every table, RLS by org + role + assignment.
-- [ ] `organisations`, `profiles` (auth.users ↔ org + role), `offices`
-- [ ] Core objects: `yachts`, `owners`, `clients`, `leads`, `opportunities`, `interactions`, `tasks`, `documents`, `brochures`, `companies`, `brokers`
-- [ ] Config-driven LOB stages (Sale/Charter/Co-Ownership/New Builds/Trade/Services)
-- [ ] RLS policies (role/office/assignment) + helper functions
-- [ ] On signup: create org + owner profile (replace `user_metadata` onboarding) ; generate TS types
+## Phase 2 — Data model & multi-tenancy ✓
+Yacht-centric schema, `org_id` on every table, RLS by org + role + assignment. Applied to the live project.
+- [x] `organisations`, `profiles` (auth.users ↔ org + role), `offices` — `0001_init_core.sql`
+- [x] Core objects: `yachts`, `owners`, `clients`, `leads`, `opportunities`, `interactions`, `tasks`, `documents`, `brochures`, `companies` (`profiles` = Broker Individual)
+- [x] Config-driven LOB stages (all 6 LOBs, spec §8) — `0003_signup_and_seed.sql` `seed_lob_stages()`
+- [x] RLS policies (org isolation + broker assignment) + helpers (`current_org_id`/`is_staff`/`is_admin`) — `0002_rls.sql` · isolation verified
+- [x] Signup→org trigger + backfill; demo org seeded; `lib/database.types.ts` generated + clients typed
+- [x] Overview dashboard wired to real org data (`lib/queries/overview.ts`) with empty-state · demo: `demo@nocodedistrict.com`
 
-## Phase 3 — Fleet (Yacht-first)
+## Phase 3 — Fleet (Yacht-first) ◀ (next)
 - [ ] DataRoom Fleet registry (master list, create/edit, bulk actions, dup detection)
 - [ ] Broker Portal Fleet view (broker-scoped, filters, saved searches, match-to-lead)
 - [ ] Yacht detail (specs, media, status, ownership, linked clients/opps/docs)

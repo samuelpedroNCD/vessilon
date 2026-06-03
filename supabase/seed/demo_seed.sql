@@ -4,7 +4,6 @@ do $$
 declare
   v_org uuid; v_broker uuid; v_office uuid;
   s_enq uuid; s_view uuid; s_offer uuid; s_cond uuid; s_won uuid;
-  o1 uuid; o2 uuid; o3 uuid;
 begin
   select p.org_id, p.id into v_org, v_broker from profiles p where p.email = 'demo@nocodedistrict.com' limit 1;
   if v_org is null then raise notice 'demo user not provisioned yet; skipping seed'; return; end if;
@@ -22,8 +21,7 @@ begin
   insert into owners (org_id, name, email) values
     (v_org,'Bernet Holdings','contact@bernet.example'),
     (v_org,'Vasquez Family Office','office@vasquez.example'),
-    (v_org,'Costa Maritime Ltd','info@costamaritime.example')
-  returning id into o1; -- (first id captured; others unused)
+    (v_org,'Costa Maritime Ltd','info@costamaritime.example');
 
   -- clients (assigned to the demo broker)
   insert into clients (org_id, name, email, categories, temperature, source, assigned_broker, gdpr_consent, last_interaction_at) values
