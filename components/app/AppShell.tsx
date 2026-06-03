@@ -31,19 +31,19 @@ type NavEntry =
 
 const NAV: NavEntry[] = [
   { type: "item", key: "overview", label: "Overview", href: "/dashboard" },
-  { type: "item", key: "inbox", label: "Inbox", href: "#", ct: "7" },
-  { type: "item", key: "tasks", label: "Tasks", href: "#", ct: "12" },
+  { type: "item", key: "inbox", label: "Inbox", href: "#" },
+  { type: "item", key: "tasks", label: "Tasks", href: "#" },
   { type: "group", label: "Brokerage" },
   { type: "item", key: "pipeline", label: "Pipeline", href: "#" },
-  { type: "item", key: "listings", label: "Listings", href: "#", ct: "128" },
+  { type: "item", key: "listings", label: "Listings", href: "#" },
   { type: "item", key: "buyers", label: "Buyers", href: "#" },
-  { type: "item", key: "offers", label: "Offers", href: "#", ct: "5" },
-  { type: "item", key: "closings", label: "Closings", href: "#", ct: "3" },
+  { type: "item", key: "offers", label: "Offers", href: "#" },
+  { type: "item", key: "closings", label: "Closings", href: "#" },
   { type: "group", label: "Management" },
-  { type: "item", key: "vessels", label: "Vessels", href: "#", ct: "36" },
-  { type: "item", key: "crew", label: "Crew", href: "#", ct: "142" },
-  { type: "item", key: "charters", label: "Charters", href: "#", ct: "8" },
-  { type: "item", key: "compliance", label: "Compliance", href: "#", ct: "3", alert: true },
+  { type: "item", key: "vessels", label: "Vessels", href: "#" },
+  { type: "item", key: "crew", label: "Crew", href: "#" },
+  { type: "item", key: "charters", label: "Charters", href: "#" },
+  { type: "item", key: "compliance", label: "Compliance", href: "#" },
   { type: "item", key: "reports", label: "Owner reports", href: "#" },
   { type: "group", label: "System" },
   { type: "item", key: "agents", label: "Agents", href: "#" },
@@ -82,7 +82,6 @@ export default function AppShell({
         <div className="topright">
           <button className="nav-btn" aria-label="Inbox">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4l6 4 6-4M2 4v8h12V4M2 4l-.5-.5h13L14 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            <span className="badge">7</span>
           </button>
           <button className="nav-btn" aria-label="Notifications">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 7a5 5 0 0110 0v3l1 2H2l1-2V7zM6 14h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>

@@ -5,7 +5,7 @@
    with the landing page's global classes.
    ============================================================ */
 
-.app { display: grid; grid-template-columns: 232px 1fr 332px; min-height: 100vh; background: var(--bg); }
+.app { display: grid; grid-template-columns: 232px 1fr 332px; grid-template-rows: 56px 1fr; min-height: 100vh; background: var(--bg); }
 .app.no-rail { grid-template-columns: 232px 1fr; }
 
 /* ---------- Top bar ---------- */
