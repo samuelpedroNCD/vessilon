@@ -4,8 +4,8 @@ import UserMenu from "./UserMenu";
 
 type IconKey =
   | "overview" | "inbox" | "tasks" | "pipeline" | "listings" | "buyers"
-  | "offers" | "closings" | "vessels" | "crew" | "charters" | "compliance"
-  | "reports" | "agents" | "audit";
+  | "leads" | "owners" | "offers" | "closings" | "vessels" | "crew"
+  | "charters" | "compliance" | "reports" | "interactions" | "agents" | "audit";
 
 const ICONS: Record<IconKey, ReactNode> = {
   overview: (<><rect x="1.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="7.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="1.5" y="7.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="7.5" y="7.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /></>),
@@ -14,6 +14,9 @@ const ICONS: Record<IconKey, ReactNode> = {
   pipeline: (<><path d="M2 2v10h10" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /><path d="M4 8l3-3 2 2 3-3" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></>),
   listings: (<><rect x="2" y="3" width="10" height="9" rx="1" stroke="currentColor" strokeWidth="1.3" /><path d="M2 6h10M5 3V1.5M9 3V1.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></>),
   buyers: (<><circle cx="5" cy="5" r="2.5" stroke="currentColor" strokeWidth="1.3" /><path d="M1.5 12c.5-2 2-3 3.5-3s3 1 3.5 3M9.5 8c1.5 0 2.5 1 3 3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></>),
+  leads: (<><path d="M1.5 2.5h11l-4 5v4.5l-3-1.5V7.5l-4-5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></>),
+  owners: (<><circle cx="7" cy="4.5" r="2.3" stroke="currentColor" strokeWidth="1.3" /><path d="M2.5 12c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></>),
+  interactions: (<><path d="M2 3.5h10v6H6l-2.5 2.5V9.5H2v-6z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></>),
   offers: (<><path d="M2 5l5-3 5 3v6l-5 3-5-3V5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /><circle cx="7" cy="8" r="1.5" fill="currentColor" /></>),
   closings: (<path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />),
   vessels: (<path d="M2 8l5-5 5 5v3H2V8z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />),
@@ -32,20 +35,23 @@ type NavEntry =
 const NAV: NavEntry[] = [
   { type: "item", key: "overview", label: "Overview", href: "/dashboard" },
   { type: "item", key: "inbox", label: "Inbox", href: "#" },
-  { type: "item", key: "tasks", label: "Tasks", href: "#" },
+  { type: "item", key: "tasks", label: "Tasks", href: "/tasks" },
   { type: "group", label: "Brokerage" },
+  { type: "item", key: "leads", label: "Leads", href: "/leads" },
+  { type: "item", key: "buyers", label: "Clients", href: "/clients" },
   { type: "item", key: "pipeline", label: "Pipeline", href: "#" },
   { type: "item", key: "listings", label: "Listings", href: "#" },
-  { type: "item", key: "buyers", label: "Buyers", href: "#" },
   { type: "item", key: "offers", label: "Offers", href: "#" },
   { type: "item", key: "closings", label: "Closings", href: "#" },
   { type: "group", label: "Management" },
-  { type: "item", key: "vessels", label: "Vessels", href: "#" },
+  { type: "item", key: "vessels", label: "Fleet", href: "/fleet" },
+  { type: "item", key: "owners", label: "Owners", href: "/owners" },
   { type: "item", key: "crew", label: "Crew", href: "#" },
   { type: "item", key: "charters", label: "Charters", href: "#" },
   { type: "item", key: "compliance", label: "Compliance", href: "#" },
   { type: "item", key: "reports", label: "Owner reports", href: "#" },
   { type: "group", label: "System" },
+  { type: "item", key: "interactions", label: "Activity", href: "/interactions" },
   { type: "item", key: "agents", label: "Agents", href: "#" },
   { type: "item", key: "audit", label: "Audit log", href: "#" },
 ];

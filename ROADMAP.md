@@ -33,18 +33,19 @@ Yacht-centric schema, `org_id` on every table, RLS by org + role + assignment. A
 - [x] Signup→org trigger + backfill; demo org seeded; `lib/database.types.ts` generated + clients typed
 - [x] Overview dashboard wired to real org data (`lib/queries/overview.ts`) with empty-state · demo: `demo@nocodedistrict.com`
 
-## Phase 3 — Fleet (Yacht-first) ◀ (next)
-- [ ] DataRoom Fleet registry (master list, create/edit, bulk actions, dup detection)
-- [ ] Broker Portal Fleet view (broker-scoped, filters, saved searches, match-to-lead)
-- [ ] Yacht detail (specs, media, status, ownership, linked clients/opps/docs)
+## Phase 3 — Fleet (Yacht-first) ✓
+- [x] Fleet list `/fleet` (filters/search by status·LOB·type, KPI strip) + `/fleet/new` + `/fleet/[id]/edit` (full CRUD)
+- [x] Yacht detail `/fleet/[id]` (specs grid, particulars, activity timeline, linked opps/clients/docs/tasks; compliance/crew/AIS stubbed)
+- [x] Reusable Toolbar/PageHeader/Pill/EmptyState + form vocabulary; demo yachts enriched with specs
 
-## Phase 4 — CRM core
-- [ ] Leads (list, detail, AI-intake fields, temperature, dedupe)
-- [ ] Clients (profile, categories, timeline, GDPR consent) + lead→client conversion
-- [ ] Owners (profiles linked to yachts)
-- [ ] Interactions (logged touchpoints, auto-log hooks) + Tasks (entity-linked)
+## Phase 4 — CRM core ✓
+- [x] Leads `/leads` CRUD + AI-confidence/temperature + **lead→client convert** (verified)
+- [x] Clients `/clients` CRUD + linked opps/interactions/tasks + **log interaction** (updates last-interaction, verified)
+- [x] Owners `/owners` CRUD (linked yachts)
+- [x] Tasks `/tasks` (list, filters, create, **complete/reopen** verified) + Interactions `/interactions` feed + quick-log
+- [x] All under RLS via server actions; sidebar wired (Leads/Clients/Fleet/Owners/Tasks/Activity); empty-states for new orgs
 
-## Phase 5 — Pipeline (multi-LOB)
+## Phase 5 — Pipeline (multi-LOB) ◀ (next)
 - [ ] Opportunities model + Kanban + List views
 - [ ] Sale stages first, then Charter / New Builds / Co-Ownership / Trade / Services
 - [ ] Weighted forecast, SLA/aging indicators, stage audit log

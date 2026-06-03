@@ -2,7 +2,15 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /** Paths that require an authenticated session. */
-const PROTECTED_PREFIXES = ["/dashboard"];
+const PROTECTED_PREFIXES = [
+  "/dashboard",
+  "/fleet",
+  "/clients",
+  "/leads",
+  "/owners",
+  "/tasks",
+  "/interactions",
+];
 
 /**
  * Refreshes the Supabase auth session on every request (so Server Components
