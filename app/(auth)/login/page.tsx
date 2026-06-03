@@ -45,7 +45,10 @@ export default function LoginPage() {
       return;
     }
     const params = new URLSearchParams(window.location.search);
-    const dest = params.get("redirectedFrom") || "/dashboard";
+    const raw = params.get("redirectedFrom");
+    // Only allow same-origin relative paths to prevent open-redirect via the
+    // redirectedFrom query param (e.g. ?redirectedFrom=https://evil.com).
+    const dest = raw && raw.startsWith("/") && !raw.startsWith("//") ? raw : "/dashboard";
     router.push(dest);
     router.refresh();
   }

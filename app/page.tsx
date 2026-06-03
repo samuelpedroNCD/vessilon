@@ -750,11 +750,11 @@ export default function Home() {
           <div>© 2026 Vessilon Operations Inc.</div>
           <div>Built for the way yacht teams work</div>
           <div className="right">
-            <a>Status</a>
-            <a>Security</a>
-            <a>Docs</a>
-            <a>Changelog</a>
-            <a>X / @vessilon</a>
+            <a href="#platform">Status</a>
+            <a href="#platform">Security</a>
+            <a href="#platform">Docs</a>
+            <a href="#platform">Changelog</a>
+            <a href="https://x.com/vessilon" target="_blank" rel="noreferrer">X / @vessilon</a>
           </div>
         </div>
       </footer>
