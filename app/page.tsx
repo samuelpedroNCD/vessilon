@@ -22,9 +22,9 @@ export default function Home() {
               <a href="#pricing">Pricing</a>
             </div>
             <div className="nav-right">
-              <a className="btn ghost">Sign in</a>
+              <a className="btn ghost" href="/login">Sign in</a>
               <a className="btn outline">Talk to sales</a>
-              <a className="btn primary">Start a pilot →</a>
+              <a className="btn primary" href="/signup">Start a pilot →</a>
             </div>
           </div>
         </div>
@@ -53,7 +53,7 @@ export default function Home() {
                   reporting, in one workspace.
                 </p>
                 <div className="cta-row">
-                  <a className="btn primary">Start a 14-day pilot</a>
+                  <a className="btn primary" href="/signup">Start a 14-day pilot</a>
                   <a className="btn outline">Watch a 3-min product tour →</a>
                 </div>
                 <div className="hero-stats">
@@ -730,7 +730,7 @@ export default function Home() {
                   running production work inside 7 days.
                 </p>
                 <div className="cta-row">
-                  <a className="btn primary">Start a 14-day pilot</a>
+                  <a className="btn primary" href="/signup">Start a 14-day pilot</a>
                   <a className="btn outline">Talk to a brokerage SE</a>
                 </div>
               </div>
