@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          actor_name: string | null
+          created_at: string
+          entity_id: string | null
+          entity_label: string | null
+          entity_type: string
+          id: string
+          meta: Json
+          org_id: string
+          summary: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_type: string
+          id?: string
+          meta?: Json
+          org_id: string
+          summary?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          actor_name?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_label?: string | null
+          entity_type?: string
+          id?: string
+          meta?: Json
+          org_id?: string
+          summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_log_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brochures: {
         Row: {
           created_at: string
@@ -1495,6 +1552,7 @@ export type Database = {
           created_by: string | null
           currency: string | null
           hero_color: string | null
+          hero_image: string | null
           hull_id: string | null
           id: string
           imo: string | null
@@ -1519,6 +1577,7 @@ export type Database = {
           created_by?: string | null
           currency?: string | null
           hero_color?: string | null
+          hero_image?: string | null
           hull_id?: string | null
           id?: string
           imo?: string | null
@@ -1543,6 +1602,7 @@ export type Database = {
           created_by?: string | null
           currency?: string | null
           hero_color?: string | null
+          hero_image?: string | null
           hull_id?: string | null
           id?: string
           imo?: string | null

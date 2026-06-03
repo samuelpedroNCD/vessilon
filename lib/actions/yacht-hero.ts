@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 
 const BUCKET = "yacht-images";
 const MAX = 10_485_760; // 10 MB
@@ -61,6 +62,7 @@ export async function uploadYachtHero(
     await supabase.storage.from(BUCKET).remove([oldPath]);
   }
 
+  await recordAudit({ action: "upload", entityType: "yacht", entityId: ctx.yachtId, summary: "Updated listing photo" });
   revalidatePath(ctx.revalidate);
   revalidatePath("/fleet");
   return { ok: true };

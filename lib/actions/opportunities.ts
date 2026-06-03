@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 
 function str(v: FormDataEntryValue | null): string | null {
   const s = (v ?? "").toString().trim();
@@ -55,8 +56,10 @@ export async function createOpportunity(fd: FormData) {
     .select("id")
     .single();
   if (error) throw new Error(error.message);
+  const newId = (data as { id: string }).id;
+  await recordAudit({ action: "create", entityType: "opportunity", entityId: newId, entityLabel: payload.title, summary: `New deal ${payload.title}`, meta: { lob: payload.lob } });
   revalidatePath("/pipeline");
-  redirect(`/pipeline/${(data as { id: string }).id}`);
+  redirect(`/pipeline/${newId}`);
 }
 
 export async function updateOpportunity(id: string, fd: FormData) {
@@ -74,8 +77,10 @@ export async function deleteOpportunity(id: string) {
   const profile = await getProfile();
   if (!profile?.org_id) redirect("/login");
   const supabase = await createClient();
+  const { data: existing } = await supabase.from("opportunities").select("title").eq("id", id).single();
   const { error } = await supabase.from("opportunities").delete().eq("id", id);
   if (error) throw new Error(error.message);
+  await recordAudit({ action: "delete", entityType: "opportunity", entityId: id, entityLabel: (existing as { title?: string } | null)?.title ?? null, summary: "Deleted deal" });
   revalidatePath("/pipeline");
   redirect("/pipeline");
 }
@@ -119,6 +124,14 @@ export async function moveStage(id: string, fd: FormData) {
     note: reason,
     actor: profile.id,
   } as never);
+
+  await recordAudit({
+    action: status === "won" ? "won" : status === "lost" ? "lost" : "stage_move",
+    entityType: "opportunity",
+    entityId: id,
+    summary: `${fromName ?? "—"} → ${toName ?? "—"}`,
+    meta: { from: fromName, to: toName, status, reason },
+  });
 
   revalidatePath("/pipeline");
   revalidatePath(`/pipeline/${id}`);

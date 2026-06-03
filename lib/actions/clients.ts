@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 
 function str(v: FormDataEntryValue | null): string | null {
   const s = (v ?? "").toString().trim();
@@ -35,8 +36,10 @@ export async function createClientRecord(fd: FormData) {
     .select("id")
     .single();
   if (error) throw new Error(error.message);
+  const newId = (data as { id: string }).id;
+  await recordAudit({ action: "create", entityType: "client", entityId: newId, entityLabel: p.name, summary: `New client ${p.name}` });
   revalidatePath("/clients");
-  redirect(`/clients/${(data as { id: string }).id}`);
+  redirect(`/clients/${newId}`);
 }
 
 export async function updateClientRecord(id: string, fd: FormData) {
@@ -54,8 +57,10 @@ export async function deleteClientRecord(id: string) {
   const profile = await getProfile();
   if (!profile?.org_id) redirect("/login");
   const supabase = await createClient();
+  const { data: existing } = await supabase.from("clients").select("name").eq("id", id).single();
   const { error } = await supabase.from("clients").delete().eq("id", id);
   if (error) throw new Error(error.message);
+  await recordAudit({ action: "delete", entityType: "client", entityId: id, entityLabel: (existing as { name?: string } | null)?.name ?? null, summary: "Deleted client" });
   revalidatePath("/clients");
   redirect("/clients");
 }

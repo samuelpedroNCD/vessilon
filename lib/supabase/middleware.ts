@@ -14,6 +14,10 @@ const PROTECTED_PREFIXES = [
   "/companies",
   "/dataroom",
   "/settings",
+  "/audit",
+  "/executive",
+  "/inbox",
+  "/marketing",
 ];
 
 /**

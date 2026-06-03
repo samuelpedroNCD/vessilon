@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 import type { EntityKind } from "@/lib/queries/documents";
 
 const COLUMN: Record<EntityKind, string> = {
@@ -59,6 +60,7 @@ export async function uploadDocument(ctx: UploadCtx, fd: FormData) {
     return { ok: false, error: `Could not save document: ${insErr.message}` };
   }
 
+  await recordAudit({ action: "upload", entityType: "document", entityLabel: displayName, summary: `Uploaded ${type} to ${ctx.entity}`, meta: { entity: ctx.entity, entity_id: ctx.entityId } });
   revalidatePath(ctx.revalidate);
   return { ok: true };
 }
@@ -74,5 +76,6 @@ export async function deleteDocument(
     await supabase.storage.from(BUCKET).remove([ctx.storage_path]);
   }
   await supabase.from("documents").delete().eq("id", ctx.id);
+  await recordAudit({ action: "delete", entityType: "document", entityId: ctx.id, summary: "Removed document" });
   revalidatePath(ctx.revalidate);
 }

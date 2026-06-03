@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 
 function str(v: FormDataEntryValue | null): string | null {
   const s = (v ?? "").toString().trim();
@@ -41,8 +42,10 @@ export async function createLead(fd: FormData) {
     .select("id")
     .single();
   if (error) throw new Error(error.message);
+  const newId = (data as { id: string }).id;
+  await recordAudit({ action: "create", entityType: "lead", entityId: newId, entityLabel: payload.name, summary: `New lead ${payload.name ?? ""}`.trim() });
   revalidatePath("/leads");
-  redirect(`/leads/${(data as { id: string }).id}`);
+  redirect(`/leads/${newId}`);
 }
 
 export async function updateLead(id: string, fd: FormData) {
@@ -60,8 +63,10 @@ export async function deleteLead(id: string) {
   const profile = await getProfile();
   if (!profile?.org_id) redirect("/login");
   const supabase = await createClient();
+  const { data: existing } = await supabase.from("leads").select("name").eq("id", id).single();
   const { error } = await supabase.from("leads").delete().eq("id", id);
   if (error) throw new Error(error.message);
+  await recordAudit({ action: "delete", entityType: "lead", entityId: id, entityLabel: (existing as { name?: string } | null)?.name ?? null, summary: "Deleted lead" });
   revalidatePath("/leads");
   redirect("/leads");
 }
@@ -96,6 +101,7 @@ export async function convertLead(id: string) {
   const clientId = (client as { id: string }).id;
 
   await supabase.from("leads").update({ status: "converted", converted_client_id: clientId } as never).eq("id", id);
+  await recordAudit({ action: "convert", entityType: "lead", entityId: id, entityLabel: (l.name as string) ?? null, summary: `Converted lead to client`, meta: { client_id: clientId } });
   revalidatePath("/leads");
   revalidatePath("/clients");
   redirect(`/clients/${clientId}`);

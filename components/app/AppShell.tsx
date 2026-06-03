@@ -37,12 +37,14 @@ type NavEntry =
 
 const NAV: NavEntry[] = [
   { type: "item", key: "overview", label: "Overview", href: "/dashboard" },
-  { type: "item", key: "inbox", label: "Inbox", href: "#" },
+  { type: "item", key: "executive", label: "Executive", href: "/executive" },
+  { type: "item", key: "inbox", label: "Inbox", href: "/inbox" },
   { type: "item", key: "tasks", label: "Tasks", href: "/tasks" },
   { type: "group", label: "Brokerage" },
   { type: "item", key: "leads", label: "Leads", href: "/leads" },
   { type: "item", key: "buyers", label: "Clients", href: "/clients" },
   { type: "item", key: "pipeline", label: "Pipeline", href: "/pipeline" },
+  { type: "item", key: "marketing", label: "Marketing", href: "/marketing" },
   { type: "item", key: "listings", label: "Listings", href: "#" },
   { type: "item", key: "offers", label: "Offers", href: "#" },
   { type: "item", key: "closings", label: "Closings", href: "#" },
@@ -64,7 +66,7 @@ const NAV: NavEntry[] = [
   { type: "group", label: "System" },
   { type: "item", key: "interactions", label: "Activity", href: "/interactions" },
   { type: "item", key: "agents", label: "Agents", href: "#" },
-  { type: "item", key: "audit", label: "Audit log", href: "#" },
+  { type: "item", key: "audit", label: "Audit log", href: "/audit" },
   { type: "item", key: "settings", label: "Settings", href: "/settings", icon: "settings" },
 ];
 

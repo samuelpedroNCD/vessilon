@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile } from "@/lib/queries/profile";
+import { recordAudit } from "@/lib/audit";
 
 function str(v: FormDataEntryValue | null): string | null {
   const s = (v ?? "").toString().trim();
@@ -24,6 +25,7 @@ export async function updateOrg(fd: FormData) {
     } as never)
     .eq("id", profile.org_id);
   if (error) throw new Error(error.message);
+  await recordAudit({ action: "update", entityType: "org", entityId: profile.org_id, summary: "Updated workspace settings" });
   revalidatePath("/settings");
 }
 
@@ -34,7 +36,9 @@ export async function setUserRole(userId: string, fd: FormData) {
   if (!role) return;
   const supabase = await createClient();
   // RLS: only an admin may update other profiles in the org.
+  const { data: target } = await supabase.from("profiles").select("full_name").eq("id", userId).single();
   const { error } = await supabase.from("profiles").update({ role } as never).eq("id", userId);
   if (error) throw new Error(error.message);
+  await recordAudit({ action: "role_change", entityType: "user", entityId: userId, entityLabel: (target as { full_name?: string } | null)?.full_name ?? null, summary: `Role set to ${role}`, meta: { role } });
   revalidatePath("/settings");
 }
