@@ -16,11 +16,13 @@ function token() {
 export async function createInvite(fd: FormData) {
   const profile = await getProfile();
   if (!profile?.org_id) return;
-  const role = str(fd.get("role")) ?? "broker";
+  const owner_id = str(fd.get("owner_id"));
+  // An owner-linked invite is always a portal (client) login.
+  const role = owner_id ? "client" : (str(fd.get("role")) ?? "broker");
   const email = str(fd.get("email"));
   const supabase = await createClient();
   const { error } = await supabase.from("invitations").insert({
-    org_id: profile.org_id, email, role, token: token(), invited_by: profile.id,
+    org_id: profile.org_id, email, role, owner_id, token: token(), invited_by: profile.id,
   } as never);
   if (error) throw new Error(error.message);
   await recordAudit({ action: "invite", entityType: "user", entityLabel: email, summary: `Invited ${email ?? "teammate"} as ${role}` });

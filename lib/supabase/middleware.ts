@@ -25,6 +25,7 @@ const PROTECTED_PREFIXES = [
   "/compliance",
   "/charters",
   "/owner-reports",
+  "/portal",
 ];
 
 /**

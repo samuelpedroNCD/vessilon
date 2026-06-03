@@ -19,8 +19,9 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
   if (!profile) redirect("/login");
   const sp = await searchParams;
   const supabase = await createClient();
-  const [org, users, invites] = await Promise.all([getOrg(supabase), listUsers(supabase), listInvitations(supabase)]);
+  const [org, users, invites, ownersRes] = await Promise.all([getOrg(supabase), listUsers(supabase), listInvitations(supabase), supabase.from("owners").select("id, name").order("name")]);
   const pendingInvites = (invites as any[]).filter((i) => i.status === "pending");
+  const ownerList = (ownersRes.data ?? []) as { id: string; name: string }[];
   const o = (org ?? {}) as any;
   const isAdmin = profile.role === "admin";
   const saved = sp.saved === "org" ? "Organisation settings saved." : sp.saved === "role" ? "Role updated." : null;
@@ -74,6 +75,18 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
             </div>
           ))}
           <p className="doc-empty" style={{ marginTop: 10 }}>Share the link with your teammate — they join this workspace with the chosen role when they sign up. (No email is sent.)</p>
+        </div>
+      )}
+
+      {isAdmin && ownerList.length > 0 && (
+        <div className="panel" style={{ marginTop: 14 }}>
+          <div className="panel-h"><h4>Owner portal access</h4><span className="sub">read-only</span></div>
+          <form action={createInvite} className="doc-upload-row">
+            <input name="email" type="email" className="doc-inp" placeholder="owner@email.com (optional)" />
+            <select name="owner_id" className="doc-sel" required defaultValue="">{[<option key="" value="" disabled>Owner…</option>, ...ownerList.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)]}</select>
+            <button className="btn outline sm" type="submit">Create portal link</button>
+          </form>
+          <p className="doc-empty" style={{ marginTop: 10 }}>Generates a sign-up link for an owner. They get a read-only portal showing only their vessels and published reports.</p>
         </div>
       )}
 

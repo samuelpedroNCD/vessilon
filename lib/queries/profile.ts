@@ -32,7 +32,7 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
 
   const { data } = await supabase
     .from("profiles")
-    .select("id, org_id, role, full_name, email, avatar_initials, notifications_seen_at, org:organisations(name)")
+    .select("id, org_id, role, full_name, email, avatar_initials, owner_id, notifications_seen_at, org:organisations(name)")
     .eq("id", user.id)
     .single();
 
@@ -43,6 +43,7 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
     full_name: string | null;
     email: string | null;
     avatar_initials: string | null;
+    owner_id: string | null;
     notifications_seen_at: string | null;
     org: { name: string } | null;
   } | null;
@@ -73,6 +74,7 @@ export const getProfile = cache(async (): Promise<Profile | null> => {
     email: d.email || user.email || "",
     initials: d.avatar_initials || initialsOf(full_name),
     company,
+    owner_id: d.owner_id,
     notifications_seen_at: d.notifications_seen_at,
   };
 });

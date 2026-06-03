@@ -1099,6 +1099,7 @@ export type Database = {
           id: string
           invited_by: string | null
           org_id: string
+          owner_id: string | null
           role: Database["public"]["Enums"]["app_role"]
           status: string
           token: string
@@ -1110,6 +1111,7 @@ export type Database = {
           id?: string
           invited_by?: string | null
           org_id: string
+          owner_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           status?: string
           token: string
@@ -1121,6 +1123,7 @@ export type Database = {
           id?: string
           invited_by?: string | null
           org_id?: string
+          owner_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           status?: string
           token?: string
@@ -1138,6 +1141,13 @@ export type Database = {
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
             referencedColumns: ["id"]
           },
         ]
@@ -2009,6 +2019,7 @@ export type Database = {
           notifications_seen_at: string | null
           office_id: string | null
           org_id: string
+          owner_id: string | null
           role: Database["public"]["Enums"]["app_role"]
           title: string | null
           updated_at: string
@@ -2022,6 +2033,7 @@ export type Database = {
           notifications_seen_at?: string | null
           office_id?: string | null
           org_id: string
+          owner_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           title?: string | null
           updated_at?: string
@@ -2035,6 +2047,7 @@ export type Database = {
           notifications_seen_at?: string | null
           office_id?: string | null
           org_id?: string
+          owner_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           title?: string | null
           updated_at?: string
@@ -2052,6 +2065,13 @@ export type Database = {
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
             referencedColumns: ["id"]
           },
         ]
