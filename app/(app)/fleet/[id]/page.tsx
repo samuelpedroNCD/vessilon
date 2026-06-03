@@ -27,7 +27,7 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
       <Link href="/fleet" className="back">← Fleet</Link>
 
       <div className="hero">
-        <div className={`photo vthumb ${y.hero_color ?? ""}`} />
+        <div className={`photo vthumb ${y.hero_color ?? ""} ${y.type === "sail" ? "sail" : ""}`} />
         <div>
           <h1>{y.name}</h1>
           <div className="meta">

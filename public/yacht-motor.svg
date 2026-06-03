@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 120" fill="none">
+  <g fill="#ffffff" fill-opacity="0.92">
+    <!-- hull -->
+    <path d="M22 80 C20 80 20 82 21 84 C27 95 41 102 58 102 L150 102 C163 102 174 98 182 90 L194 80 C196 78 195 76 191 76 L30 76 C26 76 23 78 22 80 Z"/>
+    <!-- main deck / superstructure -->
+    <path d="M52 76 L168 76 L168 56 C168 51 165 48 159 48 L104 48 L92 36 L70 36 C61 36 56 42 55 50 L52 70 Z"/>
+    <!-- upper deck -->
+    <path d="M80 48 L148 48 L148 36 C148 31 145 28 139 28 L100 28 C90 28 86 34 84 42 Z"/>
+    <!-- radar mast -->
+    <rect x="112" y="10" width="3" height="18" rx="1"/>
+    <path d="M113 14 L126 21 L113 21 Z"/>
+  </g>
+  <!-- window band -->
+  <rect x="62" y="60" width="92" height="6" rx="3" fill="#0f3b2e" fill-opacity="0.22"/>
+  <rect x="92" y="40" width="48" height="5" rx="2.5" fill="#0f3b2e" fill-opacity="0.18"/>
+</svg>

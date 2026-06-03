@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 120" fill="none">
+  <g fill="#ffffff" fill-opacity="0.92">
+    <!-- hull -->
+    <path d="M44 92 C42 92 42 94 43 96 C49 104 60 108 74 108 L156 108 C167 108 176 105 182 99 L190 92 C192 90 191 88 187 88 L50 88 C47 88 45 90 44 92 Z"/>
+    <!-- mast -->
+    <rect x="111" y="14" width="2.6" height="74" rx="1"/>
+    <!-- mainsail -->
+    <path d="M108 18 L108 84 L66 84 C72 60 86 36 108 18 Z"/>
+    <!-- jib -->
+    <path d="M116 30 L116 84 L154 84 C145 64 133 46 116 30 Z"/>
+  </g>
+</svg>
