@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { sanitizeSearch } from "@/lib/queries/search";
 
-export type AuditFilters = { entity?: string; action?: string; q?: string };
+export type AuditFilters = { entity?: string; action?: string; q?: string; period?: string };
 
 export type AuditEntry = {
   id: string;
@@ -26,6 +26,8 @@ export async function listAudit(
     .limit(limit);
   if (f.entity) query = query.eq("entity_type", f.entity);
   if (f.action) query = query.eq("action", f.action);
+  const days = f.period ? Number(f.period) : 0;
+  if (days > 0) query = query.gte("created_at", new Date(Date.now() - days * 86400000).toISOString());
   const term = sanitizeSearch(f.q);
   if (term) query = query.or(`entity_label.ilike.%${term}%,summary.ilike.%${term}%,actor_name.ilike.%${term}%`);
   const { data } = await query;

@@ -27,7 +27,7 @@ export default async function AuditPage({
   const profile = await getProfile();
   if (!profile) redirect("/login");
   const sp = await searchParams;
-  const filters: AuditFilters = { entity: sp.entity, action: sp.action, q: sp.q };
+  const filters: AuditFilters = { entity: sp.entity, action: sp.action, q: sp.q, period: sp.period };
 
   const supabase = await createClient();
   const [entries, facets] = await Promise.all([listAudit(supabase, filters), auditFacets(supabase)]);
@@ -49,6 +49,7 @@ export default async function AuditPage({
         filters={[
           { name: "entity", label: "All entities", options: facets.entities.map((e) => ({ value: e, label: label(e) })) },
           { name: "action", label: "All actions", options: facets.actions.map((a) => ({ value: a, label: label(a) })) },
+          { name: "period", label: "Any time", options: [{ value: "1", label: "Last 24h" }, { value: "7", label: "Last 7 days" }, { value: "30", label: "Last 30 days" }] },
         ]}
       />
 
@@ -74,7 +75,7 @@ export default async function AuditPage({
                   <td>
                     <span className="nm" style={{ display: "flex", flexDirection: "column" }}>
                       {e.entity_label ?? label(e.entity_type)}
-                      <small style={{ color: "var(--ink-3)" }}>{label(e.entity_type)}</small>
+                      {e.entity_label && <small style={{ color: "var(--ink-3)" }}>{label(e.entity_type)}</small>}
                     </span>
                   </td>
                   <td style={{ color: "var(--ink-2)" }}>{e.summary ?? "—"}</td>

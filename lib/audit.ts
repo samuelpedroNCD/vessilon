@@ -30,7 +30,8 @@ export async function recordAudit(input: AuditInput): Promise<void> {
       summary: input.summary ?? null,
       meta: input.meta ?? {},
     } as never);
-  } catch {
-    /* best-effort */
+  } catch (e) {
+    // best-effort: never block the user action, but surface in dev
+    if (process.env.NODE_ENV !== "production") console.error("recordAudit failed:", e);
   }
 }
