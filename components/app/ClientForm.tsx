@@ -11,11 +11,13 @@ export default function ClientForm({
   action,
   client,
   brokers,
+  companies = [],
   submitLabel = "Save client",
 }: {
   action: (fd: FormData) => void;
   client?: any;
   brokers: { id: string; full_name: string | null }[];
+  companies?: { id: string; name: string }[];
   submitLabel?: string;
 }) {
   const c = client ?? {};
@@ -29,6 +31,7 @@ export default function ClientForm({
         <div className="form-field"><label>Temperature</label><select name="temperature" defaultValue={c.temperature ?? ""}><option value="">—</option>{TEMPS.map((t) => <option key={t} value={t}>{hum(t)}</option>)}</select></div>
         <div className="form-field"><label>Source</label><input name="source" defaultValue={c.source ?? ""} /></div>
         <div className="form-field"><label>Assigned broker</label><select name="assigned_broker" defaultValue={c.assigned_broker ?? ""}><option value="">— Me —</option>{brokers.map((b) => <option key={b.id} value={b.id}>{b.full_name ?? "—"}</option>)}</select></div>
+        <div className="form-field"><label>Company</label><select name="company_id" defaultValue={c.company_id ?? ""}><option value="">— None —</option>{companies.map((co) => <option key={co.id} value={co.id}>{co.name}</option>)}</select></div>
         <div className="form-field full">
           <label>Categories</label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 12, fontSize: 13 }}>

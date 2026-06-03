@@ -5,7 +5,7 @@ import UserMenu from "./UserMenu";
 type IconKey =
   | "overview" | "inbox" | "tasks" | "pipeline" | "listings" | "buyers"
   | "leads" | "owners" | "offers" | "closings" | "vessels" | "crew"
-  | "charters" | "compliance" | "reports" | "interactions" | "agents" | "audit";
+  | "charters" | "compliance" | "reports" | "interactions" | "companies" | "agents" | "audit";
 
 const ICONS: Record<IconKey, ReactNode> = {
   overview: (<><rect x="1.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="7.5" y="1.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="1.5" y="7.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /><rect x="7.5" y="7.5" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.3" /></>),
@@ -17,6 +17,7 @@ const ICONS: Record<IconKey, ReactNode> = {
   leads: (<><path d="M1.5 2.5h11l-4 5v4.5l-3-1.5V7.5l-4-5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></>),
   owners: (<><circle cx="7" cy="4.5" r="2.3" stroke="currentColor" strokeWidth="1.3" /><path d="M2.5 12c0-2.4 2-4 4.5-4s4.5 1.6 4.5 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" /></>),
   interactions: (<><path d="M2 3.5h10v6H6l-2.5 2.5V9.5H2v-6z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /></>),
+  companies: (<><rect x="2" y="2" width="7" height="10" rx="1" stroke="currentColor" strokeWidth="1.3" /><path d="M9 5h3v7H9" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /><path d="M4 4.5h3M4 6.5h3M4 8.5h3" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" /></>),
   offers: (<><path d="M2 5l5-3 5 3v6l-5 3-5-3V5z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" /><circle cx="7" cy="8" r="1.5" fill="currentColor" /></>),
   closings: (<path d="M2.5 7l3 3 6-6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />),
   vessels: (<path d="M2 8l5-5 5 5v3H2V8z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />),
@@ -50,6 +51,8 @@ const NAV: NavEntry[] = [
   { type: "item", key: "charters", label: "Charters", href: "#" },
   { type: "item", key: "compliance", label: "Compliance", href: "#" },
   { type: "item", key: "reports", label: "Owner reports", href: "#" },
+  { type: "group", label: "DataRoom" },
+  { type: "item", key: "companies", label: "Companies", href: "/companies" },
   { type: "group", label: "System" },
   { type: "item", key: "interactions", label: "Activity", href: "/interactions" },
   { type: "item", key: "agents", label: "Agents", href: "#" },

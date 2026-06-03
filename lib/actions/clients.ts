@@ -18,6 +18,7 @@ function clientFromForm(fd: FormData) {
     categories: fd.getAll("categories").map(String),
     temperature: str(fd.get("temperature")),
     source: str(fd.get("source")),
+    company_id: str(fd.get("company_id")),
     assigned_broker: str(fd.get("assigned_broker")),
     gdpr_consent: fd.get("gdpr_consent") === "on",
   };
