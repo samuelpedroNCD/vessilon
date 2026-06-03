@@ -522,6 +522,25 @@
 .cmdk-label { display: flex; flex-direction: column; font-size: 14px; color: #15171a; min-width: 0; }
 .cmdk-label small { font-size: 11.5px; color: #9aa19d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+/* calendar */
+.app .cal-nav { display: inline-flex; align-items: center; gap: 8px; }
+.app .cal-month { font-weight: 600; font-size: 14px; min-width: 130px; text-align: center; }
+.app .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.app .cal-head { margin-bottom: 6px; }
+.app .cal-wd { font: 600 9.5px var(--font-mono, monospace); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-3); text-align: center; padding: 4px 0; }
+.app .cal-cell { min-height: 96px; border: 1px solid var(--line); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 3px; background: var(--paper); }
+.app .cal-cell.empty { background: transparent; border: none; }
+.app .cal-cell.today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.app .cal-day { font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.app .cal-ev { font-size: 10.5px; line-height: 1.25; padding: 2px 5px; border-radius: 5px; text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 2px solid; }
+.app .cal-ev.ok { background: #eef5f0; color: #1c5a47; border-color: #2e7d5b; }
+.app .cal-ev.warn { background: #f7efe6; color: #8a531f; border-color: #b8743a; }
+.app .cal-ev.danger { background: #f7eae6; color: #9a3a26; border-color: #c0492f; }
+.app .cal-ev.info { background: #eaf0f6; color: #2f4f74; border-color: #3a6ea5; }
+.app .cal-ev.gray { background: var(--bg); color: var(--ink-2); border-color: var(--line-2); }
+.app .cal-more { font-size: 10px; color: var(--ink-3); }
+@media (max-width: 720px) { .app .cal-cell { min-height: 60px; } .app .cal-ev, .app .cal-more { display: none; } }
+
 /* notifications bell */
 .app .notif { position: relative; display: inline-flex; }
 .app .notif-badge { position: absolute; top: -2px; right: -2px; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 999px; background: var(--signal); color: #fff; font: 600 9px var(--font-mono, monospace); display: grid; place-items: center; }
