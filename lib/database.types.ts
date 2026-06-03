@@ -75,6 +75,54 @@ export type Database = {
           },
         ]
       }
+      checklist_items: {
+        Row: {
+          created_at: string
+          done: boolean
+          done_at: string | null
+          id: string
+          label: string
+          opportunity_id: string
+          org_id: string
+          position: number
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          label: string
+          opportunity_id: string
+          org_id: string
+          position?: number
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          done_at?: string | null
+          id?: string
+          label?: string
+          opportunity_id?: string
+          org_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_items_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklist_items_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           assigned_broker: string | null
@@ -510,6 +558,7 @@ export type Database = {
           org_id: string
           position: number
           probability: number
+          sla_days: number | null
         }
         Insert: {
           created_at?: string
@@ -521,6 +570,7 @@ export type Database = {
           org_id: string
           position: number
           probability?: number
+          sla_days?: number | null
         }
         Update: {
           created_at?: string
@@ -532,10 +582,78 @@ export type Database = {
           org_id?: string
           position?: number
           probability?: number
+          sla_days?: number | null
         }
         Relationships: [
           {
             foreignKeyName: "lob_stages_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          amount: number | null
+          conditions: string | null
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          id: string
+          kind: string
+          opportunity_id: string
+          org_id: string
+          party: string | null
+          response_deadline: string | null
+          status: string
+        }
+        Insert: {
+          amount?: number | null
+          conditions?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          id?: string
+          kind?: string
+          opportunity_id: string
+          org_id: string
+          party?: string | null
+          response_deadline?: string | null
+          status?: string
+        }
+        Update: {
+          amount?: number | null
+          conditions?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          id?: string
+          kind?: string
+          opportunity_id?: string
+          org_id?: string
+          party?: string | null
+          response_deadline?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organisations"
@@ -588,9 +706,11 @@ export type Database = {
         Row: {
           assigned_broker: string | null
           client_id: string | null
+          close_reason: string | null
           created_at: string
           created_by: string | null
           currency: string | null
+          details: Json
           expected_close: string | null
           id: string
           lead_id: string | null
@@ -598,6 +718,7 @@ export type Database = {
           lost_reason: string | null
           org_id: string
           probability: number | null
+          stage_entered_at: string | null
           stage_id: string | null
           status: Database["public"]["Enums"]["opp_status"]
           title: string
@@ -609,9 +730,11 @@ export type Database = {
         Insert: {
           assigned_broker?: string | null
           client_id?: string | null
+          close_reason?: string | null
           created_at?: string
           created_by?: string | null
           currency?: string | null
+          details?: Json
           expected_close?: string | null
           id?: string
           lead_id?: string | null
@@ -619,6 +742,7 @@ export type Database = {
           lost_reason?: string | null
           org_id: string
           probability?: number | null
+          stage_entered_at?: string | null
           stage_id?: string | null
           status?: Database["public"]["Enums"]["opp_status"]
           title: string
@@ -630,9 +754,11 @@ export type Database = {
         Update: {
           assigned_broker?: string | null
           client_id?: string | null
+          close_reason?: string | null
           created_at?: string
           created_by?: string | null
           currency?: string | null
+          details?: Json
           expected_close?: string | null
           id?: string
           lead_id?: string | null
@@ -640,6 +766,7 @@ export type Database = {
           lost_reason?: string | null
           org_id?: string
           probability?: number | null
+          stage_entered_at?: string | null
           stage_id?: string | null
           status?: Database["public"]["Enums"]["opp_status"]
           title?: string
@@ -696,6 +823,64 @@ export type Database = {
             columns: ["yacht_id"]
             isOneToOne: false
             referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunity_events: {
+        Row: {
+          actor: string | null
+          created_at: string
+          from_stage: string | null
+          id: string
+          kind: string
+          note: string | null
+          opportunity_id: string
+          org_id: string
+          to_stage: string | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          opportunity_id: string
+          org_id: string
+          to_stage?: string | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          from_stage?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          opportunity_id?: string
+          org_id?: string
+          to_stage?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_events_actor_fkey"
+            columns: ["actor"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunity_events_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunity_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
             referencedColumns: ["id"]
           },
         ]

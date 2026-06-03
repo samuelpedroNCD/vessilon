@@ -16,6 +16,13 @@ function num(v: FormDataEntryValue | null): number | null {
 }
 
 function oppFromForm(fd: FormData) {
+  const details: Record<string, string> = {};
+  for (const [k, v] of fd.entries()) {
+    if (k.startsWith("details_")) {
+      const val = (v ?? "").toString().trim();
+      if (val) details[k.slice("details_".length)] = val;
+    }
+  }
   return {
     title: str(fd.get("title")) ?? "Untitled deal",
     lob: str(fd.get("lob")) ?? "sale",
@@ -26,6 +33,7 @@ function oppFromForm(fd: FormData) {
     currency: str(fd.get("currency")) ?? "USD",
     expected_close: str(fd.get("expected_close")),
     assigned_broker: str(fd.get("assigned_broker")),
+    details,
   };
 }
 
@@ -72,21 +80,105 @@ export async function deleteOpportunity(id: string) {
   redirect("/pipeline");
 }
 
-/** Move a deal to a stage; derive open/won/lost from the stage flags. */
+/** Move a deal to a stage; derive open/won/lost from the stage flags, capture a
+ *  reason on won/lost, stamp stage entry, and log a history event. */
 export async function moveStage(id: string, fd: FormData) {
   const profile = await getProfile();
   if (!profile?.org_id) redirect("/login");
   const stageId = str(fd.get("stage_id"));
+  const reason = str(fd.get("reason"));
   if (!stageId) redirect(`/pipeline/${id}`);
   const supabase = await createClient();
-  const { data: stage } = await supabase.from("lob_stages").select("is_won, is_lost").eq("id", stageId).single();
-  const s = stage as { is_won: boolean; is_lost: boolean } | null;
+
+  const { data: opp } = await supabase.from("opportunities").select("stage:lob_stages(name)").eq("id", id).single();
+  const { data: stage } = await supabase.from("lob_stages").select("name, is_won, is_lost").eq("id", stageId).single();
+  const fromName = (opp as { stage: { name: string } | null } | null)?.stage?.name ?? null;
+  const s = stage as { name: string; is_won: boolean; is_lost: boolean } | null;
+  const toName = s?.name ?? null;
   const status = s?.is_won ? "won" : s?.is_lost ? "lost" : "open";
+  const now = new Date().toISOString();
+
   const { error } = await supabase
     .from("opportunities")
-    .update({ stage_id: stageId, status, won_at: status === "won" ? new Date().toISOString() : null } as never)
+    .update({
+      stage_id: stageId,
+      status,
+      stage_entered_at: now,
+      won_at: status === "won" ? now : null,
+      close_reason: status === "won" || status === "lost" ? reason : null,
+    } as never)
     .eq("id", id);
   if (error) throw new Error(error.message);
+
+  await supabase.from("opportunity_events").insert({
+    org_id: profile.org_id,
+    opportunity_id: id,
+    kind: status === "won" ? "won" : status === "lost" ? "lost" : "stage_change",
+    from_stage: fromName,
+    to_stage: toName,
+    note: reason,
+    actor: profile.id,
+  } as never);
+
   revalidatePath("/pipeline");
   revalidatePath(`/pipeline/${id}`);
+}
+
+export async function addOffer(oppId: string, fd: FormData) {
+  const profile = await getProfile();
+  if (!profile?.org_id) redirect("/login");
+  const supabase = await createClient();
+  const { error } = await supabase.from("offers").insert({
+    org_id: profile.org_id,
+    opportunity_id: oppId,
+    party: str(fd.get("party")),
+    kind: str(fd.get("kind")) ?? "offer",
+    amount: num(fd.get("amount")),
+    currency: str(fd.get("currency")) ?? "USD",
+    conditions: str(fd.get("conditions")),
+    response_deadline: str(fd.get("response_deadline")),
+    created_by: profile.id,
+  } as never);
+  if (error) throw new Error(error.message);
+  revalidatePath(`/pipeline/${oppId}`);
+}
+
+export async function toggleChecklistItem(itemId: string, oppId: string, done: boolean) {
+  const profile = await getProfile();
+  if (!profile?.org_id) redirect("/login");
+  const supabase = await createClient();
+  await supabase.from("checklist_items").update({ done, done_at: done ? new Date().toISOString() : null } as never).eq("id", itemId);
+  revalidatePath(`/pipeline/${oppId}`);
+}
+
+const SALE_CLOSING_CHECKLIST = [
+  "Signed MOA / purchase agreement",
+  "Deposit received in escrow",
+  "Survey & sea trial completed",
+  "Bill of sale executed",
+  "Registration / flag transfer",
+  "Flag-state notification",
+  "Finance clearance",
+  "VAT / tax position confirmed",
+  "Balance released from escrow",
+  "Handover & inventory signed",
+];
+
+export async function seedClosingChecklist(oppId: string) {
+  const profile = await getProfile();
+  if (!profile?.org_id) redirect("/login");
+  const supabase = await createClient();
+  const { count } = await supabase.from("checklist_items").select("id", { count: "exact", head: true }).eq("opportunity_id", oppId);
+  if ((count ?? 0) > 0) {
+    revalidatePath(`/pipeline/${oppId}`);
+    return;
+  }
+  const rows = SALE_CLOSING_CHECKLIST.map((label, i) => ({
+    org_id: profile.org_id,
+    opportunity_id: oppId,
+    label,
+    position: i,
+  }));
+  await supabase.from("checklist_items").insert(rows as never);
+  revalidatePath(`/pipeline/${oppId}`);
 }
