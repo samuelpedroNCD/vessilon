@@ -114,6 +114,9 @@
 .app .vthumb.b { background: linear-gradient(135deg, #4a3830, #221610); }
 .app .vthumb.c { background: linear-gradient(135deg, #2c4856, #0f242f); }
 .app .vthumb.d { background: linear-gradient(135deg, #3a2c2a, #1a100e); }
+/* Real photo thumbnails: cover the tile, drop the SVG/gradient overlays. */
+.app .vthumb.pic { background: #0f3b2e center / cover no-repeat; }
+.app .vthumb.pic::after { display: none; }
 .app .vc-cell { display: flex; align-items: center; gap: 10px; }
 .app .vc-cell .th { width: 28px; height: 28px; border-radius: 5px; flex: 0 0 28px; }
 .app .vc-cell .nm { font-weight: 600; font-size: 13px; letter-spacing: -0.005em; }
@@ -312,6 +315,11 @@
 
 /* ---------- Hero photo waterline ---------- */
 .app .hero .photo::before { content: ""; position: absolute; left: 0; right: 0; top: 60%; height: 1px; background: rgba(255,255,255,0.30); z-index: 1; }
+
+/* ---------- Hero photo: real image variant ---------- */
+.app .hero .photo.pic { background-color: #0f3b2e; background-size: cover; background-position: center; }
+.app .hero .photo.pic::before,
+.app .hero .photo.pic::after { display: none; }
 
 /* ---------- Pipeline: LOB tabs + view toggle ---------- */
 .app .lobtabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }

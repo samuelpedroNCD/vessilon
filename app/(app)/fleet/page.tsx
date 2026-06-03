@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
 import { listYachts, yachtStatusCounts, type YachtFilters } from "@/lib/queries/fleet";
 import { money } from "@/lib/queries/overview";
+import { yachtPhoto } from "@/lib/fleet/photo";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import Toolbar from "@/components/app/Toolbar";
@@ -72,7 +73,7 @@ export default async function FleetPage({
                 <tr key={y.id}>
                   <td>
                     <Link href={`/fleet/${y.id}`} className="vc-cell row-link stretch">
-                      <span className={`th vthumb ${y.hero_color ?? ""} ${y.type === "sail" ? "sail" : ""}`} />
+                      <span className="th vthumb pic" style={{ backgroundImage: `url(${yachtPhoto(y)})` }} />
                       <span className="nm">{y.name}<small>{y.hull_id ?? "—"}{y.builder ? ` · ${y.builder}` : ""}</small></span>
                     </Link>
                   </td>

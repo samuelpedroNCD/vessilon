@@ -5,6 +5,7 @@ import { getProfile, shellUser } from "@/lib/queries/profile";
 import { getYacht, getYachtRelations } from "@/lib/queries/fleet";
 import { deleteYacht } from "@/lib/actions/yachts";
 import { money } from "@/lib/queries/overview";
+import { yachtPhoto } from "@/lib/fleet/photo";
 import AppShell from "@/components/app/AppShell";
 import AgentCard from "@/components/app/AgentCard";
 import { Pill, toneFor, label } from "@/components/app/Pill";
@@ -27,7 +28,7 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
       <Link href="/fleet" className="back">← Fleet</Link>
 
       <div className="hero">
-        <div className={`photo vthumb ${y.hero_color ?? ""} ${y.type === "sail" ? "sail" : ""}`} />
+        <div className="photo vthumb pic" style={{ backgroundImage: `url(${yachtPhoto(y)})` }} />
         <div>
           <h1>{y.name}</h1>
           <div className="meta">
