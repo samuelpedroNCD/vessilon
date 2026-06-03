@@ -18,7 +18,20 @@ const SAIL = [
   "/yachts/sail-04.jpg",
 ];
 
-export function yachtPhoto(input: { id?: string | null; type?: string | null }): string {
+/** Public URL for an object in the (public) yacht-images bucket. */
+export function yachtImageUrl(path: string): string {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  return `${base}/storage/v1/object/public/yacht-images/${path}`;
+}
+
+export function yachtPhoto(input: {
+  id?: string | null;
+  type?: string | null;
+  hero_image?: string | null;
+}): string {
+  // An uploaded listing photo always wins over the stock fallback.
+  if (input.hero_image) return yachtImageUrl(input.hero_image);
+
   const pool = input.type === "sail" ? SAIL : MOTOR;
   const key = input.id ?? "";
   let h = 0;

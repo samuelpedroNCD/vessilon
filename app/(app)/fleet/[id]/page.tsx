@@ -9,6 +9,7 @@ import { yachtPhoto } from "@/lib/fleet/photo";
 import AppShell from "@/components/app/AppShell";
 import AgentCard from "@/components/app/AgentCard";
 import DocumentsPanel from "@/components/app/DocumentsPanel";
+import HeroImageUpload from "@/components/app/HeroImageUpload";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -29,7 +30,9 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
       <Link href="/fleet" className="back">← Fleet</Link>
 
       <div className="hero">
-        <div className="photo vthumb pic" style={{ backgroundImage: `url(${yachtPhoto(y)})` }} />
+        <div className="photo vthumb pic" style={{ backgroundImage: `url(${yachtPhoto(y)})` }}>
+          <HeroImageUpload yachtId={id} revalidate={`/fleet/${id}`} hasImage={!!y.hero_image} />
+        </div>
         <div>
           <h1>{y.name}</h1>
           <div className="meta">

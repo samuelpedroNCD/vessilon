@@ -9,7 +9,7 @@ export async function listYachts(supabase: SupabaseClient, f: YachtFilters) {
   let query = supabase
     .from("yachts")
     .select(
-      "id, name, type, builder, loa_m, year, price, currency, lob, status, region, hull_id, hero_color, broker:profiles!primary_broker(full_name)",
+      "id, name, type, builder, loa_m, year, price, currency, lob, status, region, hull_id, hero_color, hero_image, broker:profiles!primary_broker(full_name)",
     )
     .order("name");
   if (f.status) query = query.eq("status", f.status);
@@ -34,6 +34,7 @@ export type YachtRow = {
   region: string | null;
   hull_id: string | null;
   hero_color: string | null;
+  hero_image: string | null;
   broker: { full_name: string | null } | null;
 };
 
