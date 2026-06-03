@@ -1,6 +1,17 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AppShell from "@/components/app/AppShell";
+import { getOverview, money, EMPTY_OVERVIEW, type Overview } from "@/lib/queries/overview";
+
+function stageColor(name: string): string {
+  const n = name.toLowerCase();
+  if (/(enquiry|inquiry|brief|scope)/.test(n)) return "inq";
+  if (/(viewing|showing|availability|shortlist|proposal)/.test(n)) return "sho";
+  if (/(offer|negotiation|deposit|application|valuation)/.test(n)) return "off";
+  if (/(conditional|survey|completion|contract|legal|build|part-exchange|agreement)/.test(n)) return "clo";
+  if (/(closed|won|active|delivery|completed)/.test(n)) return "don";
+  return "inq";
+}
 
 export default async function OverviewPage() {
   const supabase = await createClient();
@@ -9,54 +20,99 @@ export default async function OverviewPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  // Profile / org (resilient: tolerate a missing schema or unprovisioned user).
+  type ProfileRow = {
+    org_id: string;
+    full_name: string | null;
+    avatar_initials: string | null;
+    org: { name: string } | null;
+  };
+  let profile: ProfileRow | null = null;
+  try {
+    const { data } = await supabase
+      .from("profiles")
+      .select("org_id, full_name, avatar_initials, org:organisations(name)")
+      .eq("id", user.id)
+      .single();
+    profile = (data as unknown as ProfileRow) ?? null;
+  } catch {
+    /* schema not ready — fall back to metadata */
+  }
+
   const meta = (user.user_metadata ?? {}) as Record<string, string>;
-  const fullName = meta.full_name || user.email?.split("@")[0] || "Broker";
+  const fullName = profile?.full_name || meta.full_name || user.email?.split("@")[0] || "Broker";
   const firstName = fullName.split(" ")[0];
-  const company = meta.company_name || "Your workspace";
+  const company = profile?.org?.name || meta.company_name || "Your workspace";
   const initials =
-    fullName
-      .split(" ")
-      .map((w) => w[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase() || "V";
+    profile?.avatar_initials ||
+    fullName.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase() ||
+    "V";
+
+  let ov: Overview = EMPTY_OVERVIEW;
+  if (profile?.org_id) {
+    try {
+      ov = await getOverview(supabase, profile.org_id, user.id);
+    } catch {
+      ov = EMPTY_OVERVIEW;
+    }
+  }
+
+  const maxStage = Math.max(...ov.stages.map((s) => s.value), 1);
+  const openDeals = ov.stages.filter((s) => s.position !== 999).reduce((a, s) => a + s.count, 0);
+  const urgentTasks = ov.tasks.filter((t) => t.urgent).length;
+  const doneTasks = ov.tasks.filter((t) => t.done).length;
 
   const rail = (
     <>
       <div>
         <div className="rail-h"><span className="dot" /> Live activity</div>
-        <div className="live-feed">
-          <div className="l-item ok"><div className="ts">02:11</div><div className="body"><b>Counter</b> drafted · Astralis · $37.4M</div></div>
-          <div className="l-item"><div className="ts">01:58</div><div className="body">Survey parsed · 41 findings · 6 critical</div></div>
-          <div className="l-item warn"><div className="ts">01:44</div><div className="body">MCA LY3 expires 28d · <b>S/Y Polaris IV</b></div></div>
-          <div className="l-item"><div className="ts">01:30</div><div className="body">3 buyer leads scored A-tier · YATCO sync</div></div>
-          <div className="l-item ok"><div className="ts">00:54</div><div className="body">Brisant docs · signed by Vasquez</div></div>
-          <div className="l-item"><div className="ts">00:12</div><div className="body">Caelum sea trial confirmed Fri 14:00 CET</div></div>
-        </div>
+        {ov.activity.length > 0 ? (
+          <div className="live-feed">
+            {ov.activity.map((a, i) => (
+              <div className="l-item" key={i}>
+                <div className="ts">{a.ts}</div>
+                <div className="body">{a.body}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p style={{ fontSize: 12, color: "var(--ink-3)" }}>No activity logged yet.</p>
+        )}
       </div>
 
       <div>
         <div className="rail-h" style={{ color: "var(--signal)" }}><span className="dot" /> Today · agent proposes</div>
         <div className="agent-card">
-          <div className="ah"><span className="pulse" /> Negotiation agent</div>
-          <div className="body">
-            <b>M/Y Astralis</b> · the buyer&rsquo;s offer is $2.3M below ask. I&rsquo;ve drafted a counter at <b>$37.4M</b> from 6 comps and the surveyor&rsquo;s 6 critical findings. Owner intent reads <em>soft motivated</em> — I led with terms, not price.
-          </div>
+          <div className="ah"><span className="pulse" /> {ov.hasData ? "Negotiation agent" : "Onboarding agent"}</div>
+          {ov.hasData ? (
+            <div className="body">
+              <b>M/Y Astralis</b> · the buyer&rsquo;s offer is $2.3M below ask. I&rsquo;ve drafted a counter at <b>$37.4M</b> from 6 comps and the surveyor&rsquo;s 6 critical findings. Owner intent reads <em>soft motivated</em> — I led with terms, not price.
+            </div>
+          ) : (
+            <div className="body">
+              Your workspace is ready. Add your first <b>yacht</b> and a <b>deal</b> and I&rsquo;ll start surfacing comps, drafting outreach, and flagging what needs you.
+            </div>
+          )}
           <div className="act">
-            <button className="pri">Review draft</button>
-            <button>Adjust</button>
-            <button>Dismiss</button>
+            <button className="pri">{ov.hasData ? "Review draft" : "Add a yacht"}</button>
+            <button>{ov.hasData ? "Adjust" : "Import fleet"}</button>
           </div>
         </div>
       </div>
 
       <div>
         <div className="rail-h">Today · your tasks</div>
-        <div className="task done"><div className="ck done" /><div className="body">Confirm Caelum sea trial slot<small>Fri 06/13 · 14:00 CET</small></div><div className="due">10:30</div></div>
-        <div className="task"><div className="ck" /><div className="body">Send Astralis counter to L. Bernet<small>after counter review</small></div><div className="due urgent">14:00</div></div>
-        <div className="task"><div className="ck" /><div className="body">Call I. Vasquez · closing walkthrough<small>S/Y Brisant · 06/14</small></div><div className="due">15:30</div></div>
-        <div className="task"><div className="ck" /><div className="body">Review Larkspur price-drop proposal<small>agent · suggests $69M (–$5M)</small></div><div className="due">16:00</div></div>
-        <div className="task"><div className="ck" /><div className="body">Approve May owner reports (8)<small>auto-drafted · awaiting sign-off</small></div><div className="due">EOD</div></div>
+        {ov.tasks.length > 0 ? (
+          ov.tasks.map((t, i) => (
+            <div className={`task${t.done ? " done" : ""}`} key={i}>
+              <div className={`ck${t.done ? " done" : ""}`} />
+              <div className="body">{t.title}{t.sub && <small>{t.sub}</small>}</div>
+              <div className={`due${t.urgent ? " urgent" : ""}`}>{t.due}</div>
+            </div>
+          ))
+        ) : (
+          <p style={{ fontSize: 12, color: "var(--ink-3)" }}>No tasks due today.</p>
+        )}
       </div>
     </>
   );
@@ -70,36 +126,30 @@ export default async function OverviewPage() {
       <div className="page-sub">
         <span className="live">Live · syncing every 14s</span>
         <span>·</span>
-        <span>4 agent drafts awaiting your review</span>
-        <span>·</span>
-        <span>YATCO + Boats Group + private feed</span>
+        <span>{ov.hasData ? `${openDeals} open deals` : "Empty workspace — add your fleet"}</span>
       </div>
 
       {/* KPI ROW */}
       <div className="kpi-row">
         <div className="kpi">
           <div className="l">Weighted pipeline</div>
-          <div className="v tnum">$612<small>M</small></div>
-          <div className="d pos">▲ $24.1M / 30d</div>
-          <svg className="spark" viewBox="0 0 120 24" preserveAspectRatio="none"><path className="area" d="M0 22 L0 16 L15 14 L30 17 L45 12 L60 14 L75 9 L90 11 L105 6 L120 4 L120 22 Z" /><path d="M0 16 L15 14 L30 17 L45 12 L60 14 L75 9 L90 11 L105 6 L120 4" /></svg>
+          <div className="v tnum">{money(ov.kpis.weightedPipeline)}</div>
+          <div className="d pos">{openDeals} open deals</div>
         </div>
         <div className="kpi">
           <div className="l">Active offers</div>
-          <div className="v tnum">5</div>
-          <div className="d pos">▲ 2 this week</div>
-          <svg className="spark" viewBox="0 0 120 24" preserveAspectRatio="none"><path d="M0 18 L20 17 L40 14 L60 16 L80 12 L100 8 L120 6" stroke="var(--signal)" strokeWidth="1.4" fill="none" /></svg>
+          <div className="v tnum">{ov.kpis.activeOffers}</div>
+          <div className="d pos">in offer stage</div>
         </div>
         <div className="kpi">
           <div className="l">Closings · 30d</div>
-          <div className="v tnum">3 <small>· $54M</small></div>
-          <div className="d pos">▲ 1 vs last 30d</div>
-          <svg className="spark" viewBox="0 0 120 24" preserveAspectRatio="none"><path d="M0 16 L20 15 L40 16 L60 12 L80 13 L100 10 L120 7" stroke="var(--accent)" strokeWidth="1.4" fill="none" /></svg>
+          <div className="v tnum">{ov.kpis.closings30d} <small>· {money(ov.kpis.closings30dValue)}</small></div>
+          <div className="d pos">won · last 30d</div>
         </div>
         <div className="kpi">
           <div className="l">Tasks due today</div>
-          <div className="v tnum alert">5</div>
-          <div className="d warn">2 urgent · 1 done</div>
-          <svg className="spark" viewBox="0 0 120 24" preserveAspectRatio="none"><path d="M0 10 L20 12 L40 9 L60 13 L80 11 L100 14 L120 12" stroke="var(--signal)" strokeWidth="1.4" fill="none" /></svg>
+          <div className="v tnum alert">{ov.kpis.tasksDueToday}</div>
+          <div className="d warn">{urgentTasks} urgent · {doneTasks} done</div>
         </div>
       </div>
 
@@ -107,49 +157,73 @@ export default async function OverviewPage() {
       <div className="panel" style={{ marginBottom: 14 }}>
         <div className="panel-h">
           <h4>Pipeline by stage</h4>
-          <span className="sub">128 listings · 47 active deals · $612M</span>
+          <span className="sub">{openDeals} active deals · {money(ov.stages.reduce((a, s) => a + (s.position !== 999 ? s.value : 0), 0))}</span>
           <span className="actions">Open pipeline →</span>
         </div>
-        <div className="stagebar">
-          <div className="sr"><span className="nm"><span className="dot inq" />Inquiry</span><div className="track"><i className="fill inq" style={{ width: "100%" }} /></div><span className="amt">28 · $184M</span></div>
-          <div className="sr"><span className="nm"><span className="dot sho" />Showing</span><div className="track"><i className="fill sho" style={{ width: "77%" }} /></div><span className="amt">11 · $142M</span></div>
-          <div className="sr"><span className="nm"><span className="dot off" />Offer</span><div className="track"><i className="fill off" style={{ width: "53%" }} /></div><span className="amt">5 · $98M</span></div>
-          <div className="sr"><span className="nm"><span className="dot clo" />Closing</span><div className="track"><i className="fill clo" style={{ width: "29%" }} /></div><span className="amt">3 · $54M</span></div>
-          <div className="sr"><span className="nm"><span className="dot don" />Closed 30d</span><div className="track"><i className="fill don" style={{ width: "73%" }} /></div><span className="amt">12 · $134M</span></div>
-        </div>
+        {ov.stages.length > 0 ? (
+          <div className="stagebar">
+            {ov.stages.map((s) => {
+              const c = stageColor(s.name);
+              return (
+                <div className="sr" key={s.name}>
+                  <span className="nm"><span className={`dot ${c}`} />{s.name}</span>
+                  <div className="track"><i className={`fill ${c}`} style={{ width: `${Math.max(4, (s.value / maxStage) * 100)}%` }} /></div>
+                  <span className="amt">{s.count} · {money(s.value)}</span>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p style={{ fontSize: 13, color: "var(--ink-3)" }}>No open opportunities yet. Add a deal to see your pipeline here.</p>
+        )}
       </div>
 
       {/* SPLIT — agent activity + closings */}
       <div className="split">
         <div className="panel">
           <div className="panel-h">
-            <h4>Recent agent activity</h4>
-            <span className="sub">last 24h · 11 actions</span>
+            <h4>Recent activity</h4>
+            <span className="sub">latest interactions</span>
             <span className="actions">view all →</span>
           </div>
-          <div className="feed">
-            <div className="item"><div className="av-mini agent">VA</div><div><span className="who">Negotiation agent</span><br /><span className="body">Drafted counter at <b>$37.4M</b> on <b>M/Y Astralis</b> · 6 comps, MAE ±$0.4M · <em>ready for review</em></span></div><div className="ts">02:11</div></div>
-            <div className="item"><div className="av-mini deal">{initials}</div><div><span className="who">{firstName}</span><br /><span className="body">Moved <b>S/Y Brisant</b> to <b>Closing</b> · signing 06/14 14:00 CET</span></div><div className="ts">01:48</div></div>
-            <div className="item"><div className="av-mini agent">VA</div><div><span className="who">Survey agent</span><br /><span className="body">Parsed pre-purchase survey for <b>M/Y Astralis</b> · <b>41 findings</b> (6 critical, 14 major, 21 minor)</span></div><div className="ts">01:30</div></div>
-            <div className="item"><div className="av-mini ok">SS</div><div><span className="who">Sina Senra</span><br /><span className="body">Logged 3 buyer inquiries on <b>M/Y Caelum</b> from YATCO sync · all A-tier</span></div><div className="ts">00:54</div></div>
-            <div className="item"><div className="av-mini agent">VA</div><div><span className="who">Comps agent</span><br /><span className="body">Refreshed comps for <b>M/Y Larkspur</b> · suggests <b>price drop to $69M</b></span></div><div className="ts">yest.</div></div>
-          </div>
+          {ov.activity.length > 0 ? (
+            <div className="feed">
+              {ov.activity.map((a, i) => (
+                <div className="item" key={i}>
+                  <div className={`av-mini ${a.kind}`}>{initials}</div>
+                  <div><span className="who">{a.who}</span><br /><span className="body">{a.body}</span></div>
+                  <div className="ts">{a.ts}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, color: "var(--ink-3)" }}>Nothing logged yet — interactions you record will appear here.</p>
+          )}
         </div>
 
         <div className="panel">
           <div className="panel-h">
             <h4>Closing this week</h4>
-            <span className="sub">3 vessels · $54.0M GTV</span>
+            <span className="sub">{ov.closings.length} vessels · {money(ov.closings.reduce((a, c) => a + c.value, 0))} GTV</span>
             <span className="actions">view all →</span>
           </div>
-          <table className="closings">
-            <thead><tr><th>Vessel</th><th>Date</th><th>Stage</th><th>Value</th></tr></thead>
-            <tbody>
-              <tr><td><div className="vc"><div className="th vthumb b" /><div className="nm">S/Y Brisant<small>BAL30912 · 33.1m</small></div></div></td><td>06 / 14 · Fri</td><td><span className="pill ok">docs signed</span></td><td className="tnum">$8.2M</td></tr>
-              <tr><td><div className="vc"><div className="th vthumb c" /><div className="nm">M/Y Solenne<small>LIN44721 · 44.5m</small></div></div></td><td>06 / 16 · Sun</td><td><span className="pill warn">survey pending</span></td><td className="tnum">$19.5M</td></tr>
-              <tr><td><div className="vc"><div className="th vthumb" /><div className="nm">M/Y Ardea<small>BEN72031 · 48.0m</small></div></div></td><td>06 / 18 · Tue</td><td><span className="pill ok">docs signed</span></td><td className="tnum">$26.3M</td></tr>
-            </tbody>
-          </table>
+          {ov.closings.length > 0 ? (
+            <table className="closings">
+              <thead><tr><th>Vessel</th><th>Date</th><th>Stage</th><th>Value</th></tr></thead>
+              <tbody>
+                {ov.closings.map((c, i) => (
+                  <tr key={i}>
+                    <td><div className="vc"><div className={`th vthumb ${c.color}`} /><div className="nm">{c.yacht}<small>{c.sub}</small></div></div></td>
+                    <td>{c.date}</td>
+                    <td><span className="pill ok">{c.stage}</span></td>
+                    <td className="tnum">{money(c.value)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p style={{ fontSize: 13, color: "var(--ink-3)" }}>No closings scheduled in the next 7 days.</p>
+          )}
         </div>
       </div>
     </AppShell>
