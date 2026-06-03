@@ -505,3 +505,5 @@
 .app .mkt-chip button:hover { color: var(--signal); }
 .app .mkt-gen { display: flex; gap: 6px; align-items: center; }
 .app .mkt-gen .doc-sel { font-size: 12px; padding: 6px 8px; }
+.app .copylink { border: none; background: transparent; color: var(--ink-3); cursor: pointer; font-size: 11px; padding: 0 2px; }
+.app .copylink:hover { color: var(--accent); }

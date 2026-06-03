@@ -8,6 +8,7 @@ import { money } from "@/lib/queries/overview";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import EmptyState from "@/components/app/EmptyState";
+import CopyLinkButton from "@/components/app/CopyLinkButton";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 export default async function MarketingPage() {
@@ -18,7 +19,7 @@ export default async function MarketingPage() {
 
   const published = yachts.reduce((s, y) => s + y.brochures.filter((b) => b.status === "published").length, 0);
   const withPhoto = yachts.filter((y) => y.hero_image).length;
-  const noCollateral = yachts.filter((y) => y.brochures.length === 0).length;
+  const noCollateral = yachts.filter((y) => !y.brochures.some((b) => b.status === "published")).length;
 
   return (
     <AppShell active="marketing" user={shellUser(profile)}>
@@ -57,7 +58,10 @@ export default async function MarketingPage() {
                           {y.brochures.map((b) => (
                             <span className="mkt-chip" key={b.id}>
                               {b.status === "published" && b.share_token ? (
-                                <a href={`/b/${b.share_token}`} target="_blank" rel="noreferrer">{label(b.type)} ↗</a>
+                                <>
+                                  <a href={`/b/${b.share_token}`} target="_blank" rel="noreferrer">{label(b.type)} ↗</a>
+                                  <CopyLinkButton path={`/b/${b.share_token}`} label="Copy" />
+                                </>
                               ) : (
                                 <span style={{ opacity: 0.6 }}>{label(b.type)} · draft</span>
                               )}

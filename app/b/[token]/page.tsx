@@ -88,7 +88,7 @@ export default async function PublicBrochure({ params }: { params: Promise<{ tok
         .bro .btn { background:var(--teal); color:#fff; padding:12px 20px; border-radius:9px; text-decoration:none; font-weight:600; font-size:14px; }
         .bro .btn.ghost { background:transparent; color:var(--teal); border:1px solid var(--line); }
         .bro .foot { border-top:1px solid var(--line); padding:22px 28px; color:var(--ink2); font-size:12px; text-align:center; }
-        @media(max-width:640px){ .bro .grid { grid-template-columns:1fr; } }
+        @media(max-width:640px){ .bro .grid { grid-template-columns:1fr; } .bro .hero { height:min(42vh,360px); } .bro .hero .cap { padding:20px; } }
       `}</style>
 
       <div className="nav">
@@ -117,12 +117,12 @@ export default async function PublicBrochure({ params }: { params: Promise<{ tok
         </div>
 
         <div className="cta">
-          <a className="btn" href={`mailto:?subject=Enquiry: ${encodeURIComponent(y.name)}`}>Enquire about this yacht</a>
-          <span className="btn ghost">Request full specification</span>
+          <a className="btn" href={`mailto:?subject=${encodeURIComponent(`Enquiry: ${y.name}`)}&body=${encodeURIComponent(`I'd like more information about ${y.name} (${y.org}).`)}`}>Enquire about this yacht</a>
+          <a className="btn ghost" href={`mailto:?subject=${encodeURIComponent(`Full specification request: ${y.name}`)}`}>Request full specification</a>
         </div>
       </div>
 
-      <div className="foot">Presented by {y.org} · Powered by Vessilon</div>
+      <div className="foot">Presented by {y.org} · Powered by <a href="/" style={{ color: "inherit" }}>Vessilon</a></div>
     </main>
   );
 }
