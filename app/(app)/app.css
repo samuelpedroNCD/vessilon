@@ -508,6 +508,17 @@
 .app .copylink { border: none; background: transparent; color: var(--ink-3); cursor: pointer; font-size: 11px; padding: 0 2px; }
 .app .copylink:hover { color: var(--accent); }
 
+/* charter timeline rows */
+.app .charter-row { display: grid; grid-template-columns: 1.6fr 1.2fr 1fr auto auto; gap: 12px; align-items: center; padding: 10px 2px; border-top: 1px solid var(--line); text-decoration: none; color: var(--ink-1); }
+.app .charter-row:first-of-type { border-top: none; }
+.app .charter-row:hover { background: var(--paper-2); }
+.app .charter-row .cr-yacht { font-weight: 500; display: flex; flex-direction: column; }
+.app .charter-row .cr-yacht small { font-weight: 400; color: var(--ink-3); font-size: 11.5px; }
+.app .charter-row .cr-span { font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.app .charter-row .cr-client { font-size: 13px; color: var(--ink-2); }
+.app .charter-row .cr-fee { font-size: 13px; }
+@media (max-width: 720px) { .app .charter-row { grid-template-columns: 1fr auto; } .app .charter-row .cr-span, .app .charter-row .cr-client { display: none; } }
+
 /* settings save banner + role-change form */
 .app .savebar { margin: 0 0 16px; padding: 10px 14px; border-radius: 9px; background: #eef2ef; color: var(--accent); font-size: 13px; font-weight: 500; border: 1px solid rgba(15,59,46,0.15); }
 .app .rolechg { display: flex; gap: 6px; }

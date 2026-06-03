@@ -132,6 +132,147 @@ export type Database = {
           },
         ]
       }
+      charter_rates: {
+        Row: {
+          created_at: string
+          currency: string | null
+          id: string
+          org_id: string
+          season: string | null
+          weekly_rate: number | null
+          yacht_id: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          org_id: string
+          season?: string | null
+          weekly_rate?: number | null
+          yacht_id: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          id?: string
+          org_id?: string
+          season?: string | null
+          weekly_rate?: number | null
+          yacht_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "charter_rates_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charter_rates_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      charters: {
+        Row: {
+          apa: number | null
+          broker: string | null
+          client_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          destination: string | null
+          end_on: string | null
+          gross_fee: number | null
+          guests: number | null
+          id: string
+          notes: string | null
+          org_id: string
+          start_on: string | null
+          status: string
+          updated_at: string
+          yacht_id: string | null
+        }
+        Insert: {
+          apa?: number | null
+          broker?: string | null
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          destination?: string | null
+          end_on?: string | null
+          gross_fee?: number | null
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          org_id: string
+          start_on?: string | null
+          status?: string
+          updated_at?: string
+          yacht_id?: string | null
+        }
+        Update: {
+          apa?: number | null
+          broker?: string | null
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          destination?: string | null
+          end_on?: string | null
+          gross_fee?: number | null
+          guests?: number | null
+          id?: string
+          notes?: string | null
+          org_id?: string
+          start_on?: string | null
+          status?: string
+          updated_at?: string
+          yacht_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "charters_broker_fkey"
+            columns: ["broker"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charters_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charters_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charters_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "charters_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checklist_items: {
         Row: {
           created_at: string
