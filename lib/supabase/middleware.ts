@@ -18,6 +18,13 @@ const PROTECTED_PREFIXES = [
   "/executive",
   "/inbox",
   "/marketing",
+  "/offers",
+  "/closings",
+  "/listings",
+  "/crew",
+  "/compliance",
+  "/charters",
+  "/owner-reports",
 ];
 
 /**

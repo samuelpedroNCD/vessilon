@@ -828,9 +828,11 @@ export type Database = {
           currency: string | null
           id: string
           kind: string
+          notes: string | null
           opportunity_id: string
           org_id: string
           party: string | null
+          responded_at: string | null
           response_deadline: string | null
           status: string
         }
@@ -842,9 +844,11 @@ export type Database = {
           currency?: string | null
           id?: string
           kind?: string
+          notes?: string | null
           opportunity_id: string
           org_id: string
           party?: string | null
+          responded_at?: string | null
           response_deadline?: string | null
           status?: string
         }
@@ -856,9 +860,11 @@ export type Database = {
           currency?: string | null
           id?: string
           kind?: string
+          notes?: string | null
           opportunity_id?: string
           org_id?: string
           party?: string | null
+          responded_at?: string | null
           response_deadline?: string | null
           status?: string
         }
