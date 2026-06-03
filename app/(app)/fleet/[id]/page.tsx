@@ -10,6 +10,7 @@ import AppShell from "@/components/app/AppShell";
 import AgentCard from "@/components/app/AgentCard";
 import DocumentsPanel from "@/components/app/DocumentsPanel";
 import HeroImageUpload from "@/components/app/HeroImageUpload";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -41,10 +42,10 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
           </div>
           <div className="hero-actions">
             <Link href={`/fleet/${id}/edit`} className="btn outline sm">Edit</Link>
-            <span className="btn outline sm" style={{ opacity: 0.55 }}>Generate brochure</span>
-            <form action={deleteYacht.bind(null, id)}>
+            <Link href="/marketing" className="btn outline sm">Generate brochure</Link>
+            <ConfirmForm action={deleteYacht.bind(null, id)} message={`Delete "${y.name}"? This can't be undone.`}>
               <button className="btn outline sm" type="submit">Delete</button>
-            </form>
+            </ConfirmForm>
           </div>
           <div className="quickspecs">
             <div className="qs"><div className="l">LOA</div><div className="v">{y.loa_m ? `${y.loa_m} m` : "—"}</div></div>
