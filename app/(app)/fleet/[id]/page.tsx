@@ -11,6 +11,7 @@ import AgentCard from "@/components/app/AgentCard";
 import DocumentsPanel from "@/components/app/DocumentsPanel";
 import HeroImageUpload from "@/components/app/HeroImageUpload";
 import ConfirmForm from "@/components/app/ConfirmForm";
+import ExpiryBadge from "@/components/app/ExpiryBadge";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -28,6 +29,12 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
     .eq("yacht_id", id)
     .is("end_on", null);
   const crewAboard = (aboard ?? []) as any[];
+  const { data: vcerts } = await supabase
+    .from("vessel_certificates")
+    .select("id, name, type, expires_on")
+    .eq("yacht_id", id)
+    .order("expires_on", { nullsFirst: false });
+  const certs = (vcerts ?? []) as any[];
   const specs = (y.specs ?? {}) as Record<string, string>;
   const dom = Math.max(0, Math.round((Date.now() - new Date(y.created_at).getTime()) / 86400000));
   const spec = (k: string) => specs[k] ?? "—";
@@ -152,8 +159,15 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
           </div>
 
           <div className="panel">
-            <div className="panel-h"><h4>Compliance &amp; position</h4></div>
-            <div className="stub"><b>Not connected yet.</b> Flag-state docs, MLC / ISM expiry tracking and live AIS position arrive with the Fleet-ops module.</div>
+            <div className="panel-h"><h4>Compliance</h4><span className="sub">{certs.length}</span><Link href="/compliance" className="actions">Manage →</Link></div>
+            {certs.length ? (
+              certs.map((c: any) => (
+                <div className="doc-row" key={c.id} style={{ gap: 10 }}>
+                  <span style={{ flex: 1 }}>{c.name}<small style={{ display: "block", color: "var(--ink-3)" }}>{label(c.type)}</small></span>
+                  <ExpiryBadge expires={c.expires_on} />
+                </div>
+              ))
+            ) : <div className="stub"><b>No certificates recorded.</b> Track flag, ISM/MLC, insurance &amp; class certs in <Link href="/compliance" style={{ color: "var(--accent)" }}>Compliance</Link>.</div>}
           </div>
           <div className="panel">
             <div className="panel-h"><h4>Crew aboard</h4><span className="sub">{crewAboard.length}</span></div>

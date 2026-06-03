@@ -2008,6 +2008,60 @@ export type Database = {
           },
         ]
       }
+      vessel_certificates: {
+        Row: {
+          created_at: string
+          expires_on: string | null
+          id: string
+          issued_on: string | null
+          issuer: string | null
+          name: string | null
+          org_id: string
+          reference: string | null
+          type: string
+          yacht_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_on?: string | null
+          id?: string
+          issued_on?: string | null
+          issuer?: string | null
+          name?: string | null
+          org_id: string
+          reference?: string | null
+          type?: string
+          yacht_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_on?: string | null
+          id?: string
+          issued_on?: string | null
+          issuer?: string | null
+          name?: string | null
+          org_id?: string
+          reference?: string | null
+          type?: string
+          yacht_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vessel_certificates_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vessel_certificates_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       yachts: {
         Row: {
           builder: string | null
