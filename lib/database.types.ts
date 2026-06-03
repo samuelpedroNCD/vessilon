@@ -1675,6 +1675,7 @@ export type Database = {
         Args: { p_email: string; p_meta: Json; p_user_id: string }
         Returns: undefined
       }
+      public_brochure: { Args: { p_token: string }; Returns: Json }
       seed_lob_stages: { Args: { p_org: string }; Returns: undefined }
     }
     Enums: {

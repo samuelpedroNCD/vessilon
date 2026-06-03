@@ -456,3 +456,21 @@
   flex-basis: 100%; text-align: right; font-size: 11.5px; color: #fff;
   background: rgba(184,116,58,0.92); padding: 4px 8px; border-radius: 6px;
 }
+
+/* ============================ Executive bars ============================ */
+.app .exec-bars { display: flex; flex-direction: column; gap: 12px; }
+.app .exec-bar-top { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 5px; }
+.app .exec-bar-top span:last-child { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.app .exec-track { height: 8px; border-radius: 5px; background: var(--bg); overflow: hidden; }
+.app .exec-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--accent), #1c5a47); }
+
+/* ============================ Marketing room ============================ */
+.app .mkt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.app .mkt-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; padding: 3px 4px 3px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); }
+.app .mkt-chip a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.app .mkt-chip a:hover { text-decoration: underline; }
+.app .mkt-chip form { display: inline; }
+.app .mkt-chip button { border: none; background: transparent; color: var(--ink-3); cursor: pointer; font-size: 13px; line-height: 1; padding: 0 2px; border-radius: 999px; }
+.app .mkt-chip button:hover { color: var(--signal); }
+.app .mkt-gen { display: flex; gap: 6px; align-items: center; }
+.app .mkt-gen .doc-sel { font-size: 12px; padding: 6px 8px; }
