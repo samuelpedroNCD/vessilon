@@ -5,11 +5,13 @@ import { getProfile, shellUser } from "@/lib/queries/profile";
 import { getOpportunity, getOpportunityRelations, getStages, getDealExtras } from "@/lib/queries/pipeline";
 import { deleteOpportunity, moveStage, addOffer, toggleChecklistItem, seedClosingChecklist } from "@/lib/actions/opportunities";
 import { money } from "@/lib/queries/overview";
+import { commissionRate } from "@/lib/commission";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import AgentCard from "@/components/app/AgentCard";
 import LogInteractionForm from "@/components/app/LogInteractionForm";
 import DocumentsPanel from "@/components/app/DocumentsPanel";
+import ConfirmForm from "@/components/app/ConfirmForm";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -28,7 +30,7 @@ export default async function DealDetail({ params }: { params: Promise<{ id: str
 
   const curPos = o.stage?.position ?? 0;
   const prob = o.probability ?? o.stage?.probability ?? 0;
-  const gross = (o.value ?? 0) * 0.1;
+  const gross = (o.value ?? 0) * commissionRate(o.lob);
   const daysInStage = o.stage_entered_at ? Math.round((Date.now() - new Date(o.stage_entered_at).getTime()) / 86400000) : null;
   const slaDays: number | null = o.stage?.sla_days ?? null;
   const slaOver = slaDays != null && daysInStage != null && daysInStage > slaDays && o.status === "open";
@@ -45,7 +47,9 @@ export default async function DealDetail({ params }: { params: Promise<{ id: str
         actions={
           <>
             <Link href={`/pipeline/${id}/edit`} className="btn outline sm">Edit</Link>
-            <form action={deleteOpportunity.bind(null, id)}><button className="btn outline sm" type="submit">Delete</button></form>
+            <ConfirmForm action={deleteOpportunity.bind(null, id)} message={`Delete deal "${o.title}"? This can't be undone.`}>
+              <button className="btn outline sm" type="submit">Delete</button>
+            </ConfirmForm>
           </>
         }
       />

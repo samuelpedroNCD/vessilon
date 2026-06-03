@@ -15,7 +15,10 @@ export default async function PipelinePage({ searchParams }: { searchParams: Pro
   if (!profile) redirect("/login");
   const sp = await searchParams;
   const lob = LOBS.includes(sp.lob ?? "") ? (sp.lob as string) : "sale";
-  const view = sp.view === "list" ? "list" : "board";
+  const status = ["open", "won", "lost"].includes(sp.status ?? "") ? (sp.status as string) : undefined;
+  // A status drill-down (e.g. from the dashboard "Closings" tile) shows that
+  // status across all LOBs in the list view.
+  const view = status ? "list" : sp.view === "list" ? "list" : "board";
   const supabase = await createClient();
 
   const stats = await pipelineStats(supabase);
@@ -43,9 +46,20 @@ export default async function PipelinePage({ searchParams }: { searchParams: Pro
         <div className="kpi"><div className="l">Won</div><div className="v tnum">{stats.wonCount}</div></div>
       </div>
 
-      {tabs}
+      {status ? (
+        <div className="filterbar">
+          Showing <Pill tone={toneFor(status)}>{label(status)}</Pill> deals across all lines of business
+          <Link href="/pipeline" className="clear">Clear</Link>
+        </div>
+      ) : tabs}
 
-      {view === "list" ? <PipelineList supabase={supabase} lob={lob} /> : <PipelineBoard supabase={supabase} lob={lob} />}
+      {status ? (
+        <PipelineList supabase={supabase} status={status} />
+      ) : view === "list" ? (
+        <PipelineList supabase={supabase} lob={lob} />
+      ) : (
+        <PipelineBoard supabase={supabase} lob={lob} />
+      )}
     </AppShell>
   );
 }
@@ -88,10 +102,10 @@ async function PipelineBoard({ supabase, lob }: { supabase: any; lob: string }) 
   );
 }
 
-async function PipelineList({ supabase, lob }: { supabase: any; lob: string }) {
-  const opps = (await listOpportunities(supabase, { lob })) as any[];
+async function PipelineList({ supabase, lob, status }: { supabase: any; lob?: string; status?: string }) {
+  const opps = (await listOpportunities(supabase, status ? { status } : { lob })) as any[];
   if (opps.length === 0) {
-    return <EmptyState title="No deals" message="Add a deal to start this pipeline." ctaLabel="+ New deal" ctaHref={`/pipeline/new?lob=${lob}`} />;
+    return <EmptyState title="No deals" message={status ? `No ${label(status).toLowerCase()} deals yet.` : "Add a deal to start this pipeline."} ctaLabel="+ New deal" ctaHref={`/pipeline/new?lob=${lob ?? "sale"}`} />;
   }
   return (
     <div className="panel" style={{ padding: 0 }}>

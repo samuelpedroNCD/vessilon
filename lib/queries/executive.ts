@@ -1,10 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-
-// Indicative gross commission rates by line of business — used only for the
-// estimated-commission figure on the executive view (no commission is stored).
-const COMMISSION: Record<string, number> = {
-  sale: 0.09, charter: 0.15, new_build: 0.04, co_ownership: 0.06, trade: 0.05, services: 0.1,
-};
+import { commissionRate } from "@/lib/commission";
 
 export type BrokerRow = {
   id: string;
@@ -88,7 +83,7 @@ export async function getExecutive(supabase: SupabaseClient, orgId: string): Pro
   const wonQtdValue = wonQtd.reduce((s, o) => s + (o.value ?? 0), 0);
   const decided = wonQtd.length + lostQtd.length;
   const winRate = decided ? wonQtd.length / decided : 0;
-  const commissionEst = won.reduce((s, o) => s + (o.value ?? 0) * (COMMISSION[o.lob] ?? 0.08), 0);
+  const commissionEst = won.reduce((s, o) => s + (o.value ?? 0) * commissionRate(o.lob), 0);
 
   // Broker leaderboard
   const bmap = new Map<string, BrokerRow>();

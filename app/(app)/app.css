@@ -328,6 +328,9 @@
 .app .hero .photo.pic::after { display: none; }
 
 /* ---------- Pipeline: LOB tabs + view toggle ---------- */
+.app .filterbar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; font-size: 13px; color: var(--ink-2); }
+.app .filterbar .clear { margin-left: 6px; color: var(--accent); text-decoration: none; font-weight: 500; }
+.app .filterbar .clear:hover { text-decoration: underline; }
 .app .lobtabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
 .app .lobtabs a { padding: 6px 12px; border-radius: 6px; font-size: 13px; color: var(--ink-2); border: 1px solid transparent; }
 .app .lobtabs a:hover { background: var(--paper-2); color: var(--ink); }
