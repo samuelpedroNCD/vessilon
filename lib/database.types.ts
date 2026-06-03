@@ -1750,6 +1750,89 @@ export type Database = {
         }
         Relationships: []
       }
+      owner_reports: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          generated_at: string | null
+          id: string
+          metrics: Json
+          narrative: string | null
+          org_id: string
+          owner_id: string | null
+          period_end: string | null
+          period_start: string | null
+          share_token: string | null
+          status: string
+          title: string
+          updated_at: string
+          yacht_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          generated_at?: string | null
+          id?: string
+          metrics?: Json
+          narrative?: string | null
+          org_id: string
+          owner_id?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          share_token?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          yacht_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          generated_at?: string | null
+          id?: string
+          metrics?: Json
+          narrative?: string | null
+          org_id?: string
+          owner_id?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          share_token?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          yacht_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "owner_reports_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "owner_reports_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organisations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "owner_reports_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "owners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "owner_reports_yacht_id_fkey"
+            columns: ["yacht_id"]
+            isOneToOne: false
+            referencedRelation: "yachts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       owners: {
         Row: {
           company_id: string | null
@@ -2336,6 +2419,7 @@ export type Database = {
       public_brochure: { Args: { p_token: string }; Returns: Json }
       public_listing: { Args: { p_token: string }; Returns: Json }
       public_listings: { Args: { p_slug: string }; Returns: Json }
+      public_owner_report: { Args: { p_token: string }; Returns: Json }
       seed_lob_stages: { Args: { p_org: string }; Returns: undefined }
     }
     Enums: {

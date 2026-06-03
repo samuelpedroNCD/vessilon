@@ -54,7 +54,7 @@ const NAV: NavEntry[] = [
   { type: "item", key: "crew", label: "Crew", href: "/crew" },
   { type: "item", key: "charters", label: "Charters", href: "/charters" },
   { type: "item", key: "compliance", label: "Compliance", href: "/compliance" },
-  { type: "item", key: "reports", label: "Owner reports", href: "#", soon: true },
+  { type: "item", key: "reports", label: "Owner reports", href: "/owner-reports" },
   { type: "group", label: "DataRoom" },
   { type: "item", key: "companies", label: "Companies", href: "/companies" },
   { type: "item", key: "shipyards", label: "Shipyards", href: "/dataroom/shipyards", icon: "ref" },
