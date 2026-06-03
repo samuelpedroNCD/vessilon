@@ -4,22 +4,39 @@ import { sanitizeSearch } from "@/lib/queries/search";
 // Untyped client param (select strings not schema-validated) — consistent with
 // lib/queries/overview.ts; pages pass the typed client, assignable here.
 
-export type YachtFilters = { q?: string; status?: string; lob?: string; type?: string };
+export type YachtFilters = { q?: string; status?: string; lob?: string; type?: string; page?: string };
 
-export async function listYachts(supabase: SupabaseClient, f: YachtFilters) {
-  let query = supabase
-    .from("yachts")
-    .select(
-      "id, name, type, builder, loa_m, year, price, currency, lob, status, region, hull_id, hero_color, hero_image, broker:profiles!primary_broker(full_name)",
-    )
-    .order("name");
+export const PER_PAGE = 10;
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function applyYachtFilters(query: any, f: YachtFilters) {
   if (f.status) query = query.eq("status", f.status);
   if (f.lob) query = query.eq("lob", f.lob);
   if (f.type) query = query.eq("type", f.type);
   const term = sanitizeSearch(f.q);
   if (term) query = query.or(`name.ilike.%${term}%,hull_id.ilike.%${term}%,builder.ilike.%${term}%`);
+  return query;
+}
+
+export async function listYachts(supabase: SupabaseClient, f: YachtFilters) {
+  const page = Math.max(1, Number(f.page) || 1);
+  let query = supabase
+    .from("yachts")
+    .select(
+      "id, name, type, builder, loa_m, year, price, currency, lob, status, region, hull_id, hero_color, hero_image, broker:profiles!primary_broker(full_name)",
+    )
+    .order("name")
+    .range((page - 1) * PER_PAGE, page * PER_PAGE - 1);
+  query = applyYachtFilters(query, f);
   const { data } = await query;
   return (data ?? []) as unknown as YachtRow[];
+}
+
+export async function yachtCount(supabase: SupabaseClient, f: YachtFilters): Promise<number> {
+  let query = supabase.from("yachts").select("id", { count: "exact", head: true });
+  query = applyYachtFilters(query, f);
+  const { count } = await query;
+  return count ?? 0;
 }
 
 export type YachtRow = {

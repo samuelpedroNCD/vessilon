@@ -2,12 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, shellUser } from "@/lib/queries/profile";
-import { listYachts, yachtStatusCounts, type YachtFilters } from "@/lib/queries/fleet";
+import { listYachts, yachtStatusCounts, yachtCount, PER_PAGE, type YachtFilters } from "@/lib/queries/fleet";
 import { money } from "@/lib/queries/overview";
 import { yachtPhoto } from "@/lib/fleet/photo";
 import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import Toolbar from "@/components/app/Toolbar";
+import Pager from "@/components/app/Pager";
 import EmptyState from "@/components/app/EmptyState";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
@@ -22,11 +23,12 @@ export default async function FleetPage({
   const profile = await getProfile();
   if (!profile) redirect("/login");
   const sp = await searchParams;
-  const filters: YachtFilters = { q: sp.q, status: sp.status, lob: sp.lob, type: sp.type };
+  const filters: YachtFilters = { q: sp.q, status: sp.status, lob: sp.lob, type: sp.type, page: sp.page };
 
   const supabase = await createClient();
-  const [yachts, counts] = await Promise.all([listYachts(supabase, filters), yachtStatusCounts(supabase)]);
+  const [yachts, counts, filteredTotal] = await Promise.all([listYachts(supabase, filters), yachtStatusCounts(supabase), yachtCount(supabase, filters)]);
   const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  const page = Math.max(1, Number(sp.page) || 1);
 
   return (
     <AppShell active="vessels" user={shellUser(profile)}>
@@ -88,6 +90,7 @@ export default async function FleetPage({
               ))}
             </tbody>
           </table>
+          <Pager page={page} perPage={PER_PAGE} total={filteredTotal} params={sp} />
         </div>
       )}
     </AppShell>
