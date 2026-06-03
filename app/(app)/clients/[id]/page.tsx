@@ -9,6 +9,7 @@ import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import LogInteractionForm from "@/components/app/LogInteractionForm";
 import AgentCard from "@/components/app/AgentCard";
+import DocumentsPanel from "@/components/app/DocumentsPanel";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -72,6 +73,8 @@ export default async function ClientDetail({ params }: { params: Promise<{ id: s
               ))}
             </div>
           )}
+
+          <DocumentsPanel entity="client" entityId={id} revalidate={`/clients/${id}`} />
         </div>
 
         <div className="stack">

@@ -384,3 +384,51 @@
   .app .split { grid-template-columns: 1fr; }
   .app main { padding: 20px 18px; }
 }
+
+/* ============================ Documents panel ============================ */
+.app .doc-upload { margin-bottom: 14px; }
+.app .doc-upload-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.app .doc-file { flex: 1 1 180px; min-width: 0; font-size: 12px; color: var(--ink-2); }
+.app .doc-file::file-selector-button {
+  font: inherit; font-size: 12px; margin-right: 10px; padding: 6px 12px;
+  border: 1px solid var(--line); border-radius: 7px; background: var(--paper-2);
+  color: var(--ink-1); cursor: pointer;
+}
+.app .doc-file::file-selector-button:hover { background: var(--bg); }
+.app .doc-inp, .app .doc-sel {
+  font: inherit; font-size: 13px; padding: 7px 10px; border: 1px solid var(--line);
+  border-radius: 7px; background: var(--paper); color: var(--ink-1);
+}
+.app .doc-inp { flex: 1 1 150px; min-width: 0; }
+.app .doc-inp:focus, .app .doc-sel:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15,59,46,0.10); }
+.app .doc-err { margin-top: 8px; font-size: 12.5px; color: var(--signal); }
+
+.app .doc-list { display: flex; flex-direction: column; }
+.app .doc-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 2px;
+  border-top: 1px solid var(--line);
+}
+.app .doc-item:first-child { border-top: 1px solid var(--line); }
+.app .doc-ic {
+  flex: 0 0 auto; display: grid; place-items: center; width: 34px; height: 34px;
+  border-radius: 7px; background: var(--paper-2); border: 1px solid var(--line);
+  font: 600 9px var(--mono, monospace); letter-spacing: 0.03em; color: var(--ink-3);
+}
+.app .doc-name {
+  flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px;
+  font-size: 13.5px; font-weight: 500; color: var(--ink-1); text-decoration: none;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.app .doc-name:hover { color: var(--accent); }
+.app .doc-name small { font-weight: 400; font-size: 11.5px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app .doc-dl {
+  flex: 0 0 auto; font-size: 12px; font-weight: 500; color: var(--ink-2);
+  text-decoration: none; padding: 5px 10px; border: 1px solid var(--line); border-radius: 7px;
+}
+.app .doc-dl:hover { background: var(--paper-2); color: var(--accent); border-color: var(--accent); }
+.app .doc-del {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 7px; border: 1px solid transparent;
+  background: transparent; color: var(--ink-3); cursor: pointer; font-size: 13px; line-height: 1;
+}
+.app .doc-del:hover { background: rgba(184,116,58,0.10); color: var(--signal); border-color: rgba(184,116,58,0.30); }
+.app .doc-empty { font-size: 13px; color: var(--ink-3); margin: 4px 0 0; }

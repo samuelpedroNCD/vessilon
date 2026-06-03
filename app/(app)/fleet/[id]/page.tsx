@@ -8,6 +8,7 @@ import { money } from "@/lib/queries/overview";
 import { yachtPhoto } from "@/lib/fleet/photo";
 import AppShell from "@/components/app/AppShell";
 import AgentCard from "@/components/app/AgentCard";
+import DocumentsPanel from "@/components/app/DocumentsPanel";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -103,18 +104,14 @@ export default async function YachtDetail({ params }: { params: Promise<{ id: st
             ) : <p style={{ fontSize: 13, color: "var(--ink-3)" }}>No linked opportunities.</p>}
           </div>
 
-          {(rel.documents.length > 0 || rel.tasks.length > 0) && (
+          <DocumentsPanel entity="yacht" entityId={id} revalidate={`/fleet/${id}`} />
+
+          {rel.tasks.length > 0 && (
             <div className="panel">
-              <div className="panel-h"><h4>Documents &amp; tasks</h4></div>
-              {rel.documents.map((d: any) => (
-                <div className="doc-row" key={d.id}>📄 {d.name}<span className="end">{label(d.type)} · v{d.version}</span></div>
-              ))}
+              <div className="panel-h"><h4>Tasks</h4><span className="sub">{rel.tasks.length}</span></div>
               {rel.tasks.map((t: any) => (
                 <div className="doc-row" key={t.id}>☑ {t.title}<span className="end">{label(t.status)}</span></div>
               ))}
-              {rel.documents.length === 0 && rel.tasks.length === 0 && (
-                <p style={{ fontSize: 13, color: "var(--ink-3)" }}>None yet.</p>
-              )}
             </div>
           )}
         </div>

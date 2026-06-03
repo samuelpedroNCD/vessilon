@@ -9,6 +9,7 @@ import AppShell from "@/components/app/AppShell";
 import PageHeader from "@/components/app/PageHeader";
 import AgentCard from "@/components/app/AgentCard";
 import LogInteractionForm from "@/components/app/LogInteractionForm";
+import DocumentsPanel from "@/components/app/DocumentsPanel";
 import { Pill, toneFor, label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -176,6 +177,8 @@ export default async function DealDetail({ params }: { params: Promise<{ id: str
               {rel.tasks.map((t: any) => <div className="doc-row" key={t.id}>☑ {t.title}<span className="end">{label(t.status)}</span></div>)}
             </div>
           )}
+
+          <DocumentsPanel entity="opportunity" entityId={id} revalidate={`/pipeline/${id}`} />
         </div>
 
         <div className="stack">
