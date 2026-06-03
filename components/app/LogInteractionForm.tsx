@@ -1,7 +1,6 @@
 import { logInteraction } from "@/lib/actions/interactions";
+import { INTERACTION_TYPES as TYPES, INTERACTION_OUTCOMES as OUTCOMES } from "@/lib/interactions/constants";
 
-const TYPES = ["call", "email", "meeting", "viewing", "brochure_share", "whatsapp", "note", "event", "other"];
-const OUTCOMES = ["Positive", "Neutral", "Negative", "Follow-up Required"];
 function hum(s: string) {
   return s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }

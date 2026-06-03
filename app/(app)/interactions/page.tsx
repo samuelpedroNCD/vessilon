@@ -8,10 +8,10 @@ import PageHeader from "@/components/app/PageHeader";
 import Toolbar from "@/components/app/Toolbar";
 import EmptyState from "@/components/app/EmptyState";
 import LogInteractionForm from "@/components/app/LogInteractionForm";
+import { INTERACTION_TYPES as TYPES } from "@/lib/interactions/constants";
 import { label } from "@/components/app/Pill";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const TYPES = ["call", "email", "meeting", "viewing", "brochure_share", "whatsapp", "note", "event", "other"];
 
 function linked(i: any): { href: string; name: string } | null {
   if (i.client) return { href: `/clients/${i.client.id}`, name: i.client.name };
