@@ -140,7 +140,12 @@ export async function getOverview(
       color: o.yacht?.hero_color ?? "",
     }));
 
-  // Recent activity (interactions)
+  // Recent activity (interactions) — icon tone varies by interaction type
+  const activityKind = (type: string): ActivityRow["kind"] => {
+    if (/call|email|meeting|viewing|message|whatsapp/i.test(type)) return "ok";
+    if (/offer|deal|stage|won|negotiat/i.test(type)) return "deal";
+    return "agent";
+  };
   const activity: ActivityRow[] = ((acts ?? []) as unknown as {
     type: string;
     notes: string | null;
@@ -150,7 +155,7 @@ export async function getOverview(
     who: a.yacht?.name ?? "Activity",
     body: a.notes ?? a.type,
     ts: relTime(a.occurred_at),
-    kind: "deal" as const,
+    kind: activityKind(a.type),
   }));
 
   // Today's tasks (rail)

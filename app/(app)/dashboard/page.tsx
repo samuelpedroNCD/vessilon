@@ -121,7 +121,7 @@ export default async function OverviewPage() {
     <AppShell active="overview" user={{ name: fullName, email: user.email ?? "", company, initials }} rail={rail}>
       <div className="page-h">
         <h1>Welcome back, {firstName}</h1>
-        <span className="crumb">/ {company.toLowerCase()} / today</span>
+        <span className="crumb">/ {company} / today</span>
       </div>
       <div className="page-sub">
         <span className="live">Live · syncing every 14s</span>
@@ -131,21 +131,21 @@ export default async function OverviewPage() {
 
       {/* KPI ROW */}
       <div className="kpi-row">
-        <div className="kpi">
+        <a className="kpi" href="/pipeline">
           <div className="l">Weighted pipeline</div>
           <div className="v tnum">{money(ov.kpis.weightedPipeline)}</div>
           <div className="d pos">{openDeals} open deals</div>
-        </div>
+        </a>
         <div className="kpi">
           <div className="l">Active offers</div>
           <div className="v tnum">{ov.kpis.activeOffers}</div>
           <div className="d pos">in offer stage</div>
         </div>
-        <div className="kpi">
+        <a className="kpi" href="/pipeline?status=won">
           <div className="l">Closings · 30d</div>
           <div className="v tnum">{ov.kpis.closings30d} <small>· {money(ov.kpis.closings30dValue)}</small></div>
           <div className="d pos">won · last 30d</div>
-        </div>
+        </a>
         <div className="kpi">
           <div className="l">Tasks due today</div>
           <div className="v tnum alert">{ov.kpis.tasksDueToday}</div>
